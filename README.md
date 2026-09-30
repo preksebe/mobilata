@@ -6,6 +6,9 @@ Flask + SQLite: catalog pe categorii, pagini de produs cu recenzii, coș, comand
 și plată simulată, conturi de client (inclusiv login cu Google) cu zonă GDPR,
 plus panou de administrare pentru produse, comenzi, clienți și utilizatori.
 
+**Demo online:** https://preksebe.github.io/mobilata/ (versiune doar în browser,
+datele rămân la fiecare vizitator; se construiește cu `python demo/build.py`)
+
 ## Pornire
 
 ```bash

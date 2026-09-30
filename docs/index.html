@@ -1,0 +1,1472 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MobilaTa · Mobila ta, de la noi.</title>
+<meta name="description" content="MobilaTa, magazin online de mobilă. Versiune demo, proiect de practică.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700&family=Nunito+Sans:ital,wght@0,400;0,600;0,700;1,400&display=swap">
+<style>
+/* MobilaTa: albastru pentru accente, gri pentru fundaluri și text secundar. */
+:root {
+  --blue: #1f5fae;
+  --blue-dark: #174a88;
+  --blue-soft: #e7eef8;
+  --grey-50: #f4f5f7;
+  --grey-100: #e9ebee;
+  --grey-300: #cfd3d9;
+  --grey-500: #7a818b;
+  --grey-700: #4a515b;
+  --ink: #1e232a;
+  --white: #ffffff;
+  --success: #1f7a4d;
+  --success-soft: #e3f3ea;
+  --danger: #b3261e;
+  --danger-soft: #fbe8e7;
+  --warn: #9a5b00;
+  --star: #f2a900;
+
+  --font-display: "Outfit", "Segoe UI", system-ui, sans-serif;
+  --font-body: "Nunito Sans", "Segoe UI", system-ui, sans-serif;
+
+  --radius: 10px;
+  --radius-small: 6px;
+  --shadow: 0 1px 2px rgba(30, 35, 42, .06), 0 6px 20px rgba(30, 35, 42, .06);
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  background: var(--grey-50);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.6;
+}
+img { max-width: 100%; display: block; }
+a { color: var(--blue); }
+h1, h2, h3, h4 { font-family: var(--font-display); line-height: 1.2; margin: 0 0 .5em; text-wrap: balance; }
+h1 { font-size: clamp(30px, 4vw, 42px); font-weight: 700; }
+h2 { font-size: clamp(22px, 2.6vw, 28px); font-weight: 600; }
+h3 { font-size: 18px; font-weight: 600; }
+p { margin: 0 0 1em; }
+.container { width: 100%; max-width: 1200px; margin: 0 auto; padding-inline: 20px; }
+.muted { color: var(--grey-500); }
+.small { font-size: 14px; }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.eyebrow { font-size: 13px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--blue); margin-bottom: 8px; }
+:focus-visible { outline: 3px solid var(--blue); outline-offset: 2px; }
+
+/* ---------- Butoane ---------- */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  padding: 11px 20px; border: 2px solid var(--blue); border-radius: var(--radius-small);
+  background: var(--blue); color: var(--white); font: 600 15px/1.2 var(--font-body);
+  text-decoration: none; cursor: pointer; transition: background .15s, border-color .15s, color .15s;
+}
+.btn:hover { background: var(--blue-dark); border-color: var(--blue-dark); }
+.btn-large { padding: 14px 26px; font-size: 16px; }
+.btn-small { padding: 7px 12px; font-size: 14px; }
+.btn-block { width: 100%; }
+.btn-ghost { background: transparent; color: var(--blue); border-color: var(--grey-300); }
+.btn-ghost:hover { background: var(--blue-soft); border-color: var(--blue); color: var(--blue-dark); }
+.btn-danger { background: transparent; color: var(--danger); border-color: var(--grey-300); }
+.btn-danger:hover { background: var(--danger-soft); border-color: var(--danger); }
+.link-button { background: none; border: 0; padding: 0; color: var(--grey-500); font: inherit; font-size: 14px; text-decoration: underline; cursor: pointer; }
+.link-button:hover { color: var(--danger); }
+
+/* ---------- Antet ---------- */
+.site-header { background: var(--white); border-bottom: 1px solid var(--grey-100); position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20; }
+.header-row { display: flex; align-items: center; gap: 28px; min-height: 68px; }
+.logo { font-family: var(--font-display); font-weight: 700; font-size: 26px; color: var(--ink); text-decoration: none; letter-spacing: -.01em; flex-shrink: 0; }
+.logo span { color: var(--blue); }
+.main-nav { display: flex; align-items: center; flex: 1; min-width: 0; }
+.nav-links { display: flex; gap: 4px; flex: 1; min-width: 0; overflow: hidden; }
+.main-nav a { padding: 8px 12px; border-radius: var(--radius-small); color: var(--grey-700); text-decoration: none; font-weight: 600; white-space: nowrap; }
+.main-nav a:hover { background: var(--grey-50); color: var(--ink); }
+.main-nav a.active { color: var(--blue); background: var(--blue-soft); }
+.nav-toggle { display: none; align-items: center; gap: 8px; padding: 8px 12px; border: 1px solid var(--grey-300); border-radius: var(--radius-small); background: var(--white); color: var(--ink); font: 600 15px/1.2 var(--font-body); cursor: pointer; white-space: nowrap; }
+.nav-toggle:hover { border-color: var(--blue); color: var(--blue); }
+.nav-toggle svg { transition: transform .2s; }
+.nav-collapsed .nav-toggle { display: inline-flex; }
+.nav-collapsed .nav-links { display: none; position: absolute; top: 100%; left: 0; right: 0; flex-direction: column; gap: 2px; padding: 8px 12px 14px; background: var(--white); border-bottom: 1px solid var(--grey-100); box-shadow: 0 12px 24px rgba(30, 35, 42, .1); overflow: visible; }
+.nav-collapsed.nav-open .nav-links { display: flex; }
+.nav-collapsed.nav-open .nav-toggle { border-color: var(--blue); color: var(--blue); }
+.nav-collapsed.nav-open .nav-toggle svg { transform: rotate(180deg); }
+.nav-collapsed .nav-links a { padding: 12px 14px; font-size: 16px; }
+.header-actions { display: flex; gap: 6px; margin-left: auto; flex-shrink: 0; }
+.icon-link { position: relative; display: flex; align-items: center; gap: 6px; padding: 8px 10px; border-radius: var(--radius-small); color: var(--grey-700); text-decoration: none; font-weight: 600; font-size: 15px; }
+.icon-link:hover { background: var(--grey-50); color: var(--blue); }
+.cart-badge { position: absolute; top: -2px; left: 20px; min-width: 19px; height: 19px; padding: 0 5px; border-radius: 10px; background: var(--blue); color: var(--white); font-size: 12px; line-height: 19px; text-align: center; }
+
+@media (max-width: 820px) {
+  .header-row { gap: 12px; min-height: 62px; }
+  .logo { font-size: 23px; }
+  .header-actions { gap: 0; }
+  .icon-label { display: none; }
+}
+
+/* ---------- Mesaje ---------- */
+.flash-stack { padding-top: 16px; }
+.flash { padding: 12px 16px; border-radius: var(--radius-small); margin: 0 0 12px; border-left: 4px solid; }
+.flash ul { margin: 6px 0 0; padding-left: 20px; }
+.flash-success { background: var(--success-soft); border-color: var(--success); color: #164f33; }
+.flash-error { background: var(--danger-soft); border-color: var(--danger); color: #7d1a15; }
+
+/* ---------- Prima pagină ---------- */
+.hero { background: var(--white); border-bottom: 1px solid var(--grey-100); }
+.hero-grid { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); gap: 48px; align-items: center; padding-block: 56px; }
+.hero h1 { font-size: clamp(48px, 7vw, 84px); letter-spacing: -.03em; margin-bottom: 4px; }
+.slogan { font-family: var(--font-display); font-size: clamp(22px, 2.6vw, 30px); font-weight: 500; color: var(--blue); margin-bottom: 20px; }
+.hero-lede { color: var(--grey-700); font-size: 18px; max-width: 44ch; margin-bottom: 28px; }
+.hero-img img { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; border-radius: var(--radius); }
+@media (max-width: 820px) {
+  .hero-grid { grid-template-columns: minmax(0, 1fr); gap: 28px; padding-block: 32px; }
+  .hero-img { order: -1; }
+}
+
+.categories { padding-block: 56px; }
+.section-head { margin-bottom: 24px; }
+.section-head p { margin: 0; }
+.cat-grid { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 16px; }
+.cat-tile { grid-column: span 2; position: relative; display: block; aspect-ratio: 4 / 3; border-radius: var(--radius); overflow: hidden; color: var(--white); text-decoration: none; background: var(--grey-300); }
+.cat-tile:nth-child(-n+2) { grid-column: span 3; aspect-ratio: 16 / 9; }
+.cat-tile img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: transform .4s ease; }
+.cat-tile::after { content: ""; position: absolute; inset: 0; background: linear-gradient(to top, rgba(15, 25, 40, .78) 0%, rgba(15, 25, 40, .15) 55%, rgba(15, 25, 40, 0) 100%); }
+.cat-tile-label { position: absolute; left: 20px; bottom: 18px; z-index: 1; display: flex; flex-direction: column; }
+.cat-tile-name { font-family: var(--font-display); font-size: 24px; font-weight: 600; }
+.cat-tile-count { font-size: 14px; opacity: .85; }
+.cat-tile-arrow { position: absolute; right: 18px; bottom: 18px; z-index: 1; width: 40px; height: 40px; border-radius: 50%; background: var(--white); color: var(--blue); display: grid; place-items: center; font-size: 20px; transition: background .2s, color .2s; }
+.cat-tile:hover img { transform: scale(1.04); }
+.cat-tile:hover .cat-tile-arrow { background: var(--blue); color: var(--white); }
+@media (max-width: 900px) {
+  .cat-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .cat-grid .cat-tile { grid-column: span 1; aspect-ratio: 4 / 3; }
+  .cat-grid .cat-tile:first-child { grid-column: span 2; aspect-ratio: 16 / 9; }
+}
+@media (max-width: 520px) {
+  .cat-grid { grid-template-columns: minmax(0, 1fr); }
+  .cat-grid .cat-tile, .cat-grid .cat-tile:first-child { grid-column: span 1; aspect-ratio: 16 / 10; }
+}
+
+.perks { background: var(--white); border-top: 1px solid var(--grey-100); padding-block: 40px; }
+.perks-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 32px; }
+.perk h3 { color: var(--blue-dark); margin-bottom: 4px; }
+.perk p { margin: 0; }
+@media (max-width: 720px) { .perks-grid { grid-template-columns: minmax(0, 1fr); gap: 20px; } }
+
+/* ---------- Pagina de categorie ---------- */
+.page-head { position: relative; color: var(--white); background: var(--ink) var(--head-img) center / cover; padding-block: 64px 48px; }
+.page-head::before { content: ""; position: absolute; inset: 0; background: rgba(15, 25, 40, .62); }
+.page-head .container { position: relative; }
+.page-head h1 { margin-bottom: 6px; }
+.page-head p { margin: 0; max-width: 55ch; opacity: .9; }
+.breadcrumb { font-size: 14px; margin-bottom: 12px; opacity: .85; }
+.breadcrumb a { color: inherit; }
+.breadcrumb span { margin-inline: 4px; }
+.breadcrumb-plain { color: var(--grey-500); padding-top: 24px; opacity: 1; }
+.breadcrumb-plain a { color: var(--grey-700); }
+
+.product-section { padding-block: 32px 64px; }
+.result-count { margin-bottom: 16px; }
+.product-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 20px; }
+.product-grid-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+@media (max-width: 1000px) { .product-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+@media (max-width: 760px) { .product-grid, .product-grid-3 { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; } }
+@media (max-width: 440px) { .product-grid, .product-grid-3 { grid-template-columns: minmax(0, 1fr); } }
+
+.product-card { background: var(--white); border: 1px solid var(--grey-100); border-radius: var(--radius); overflow: hidden; display: flex; flex-direction: column; transition: box-shadow .2s, border-color .2s; }
+.product-card:hover { box-shadow: var(--shadow); border-color: var(--grey-300); }
+.product-card-link { color: inherit; text-decoration: none; flex: 1; display: flex; flex-direction: column; }
+.product-card-img { aspect-ratio: 1 / 1; background: var(--grey-100); overflow: hidden; }
+.product-card-img img { width: 100%; height: 100%; object-fit: cover; transition: transform .35s ease; }
+.product-card:hover .product-card-img img { transform: scale(1.03); }
+.product-card-body { padding: 14px 16px 0; flex: 1; }
+.product-card-body h3 { font-size: 17px; margin-bottom: 4px; }
+.product-card-desc { color: var(--grey-500); font-size: 14px; margin-bottom: 8px; }
+.product-card-rating { margin-bottom: 10px; }
+.product-card-foot { display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap; padding: 0 16px 16px; }
+
+.price { font-family: var(--font-display); font-weight: 700; font-size: 19px; color: var(--ink); font-variant-numeric: tabular-nums; }
+.price-big { font-size: 32px; margin: 8px 0 12px; }
+.out-of-stock, .stock-out { color: var(--danger); font-weight: 600; font-size: 14px; }
+
+.stars { color: var(--grey-300); letter-spacing: 1px; font-size: 15px; }
+.star.on { color: var(--star); }
+.star-count { color: var(--grey-500); font-size: 13px; margin-left: 4px; }
+
+.empty-state { text-align: center; padding: 64px 20px; }
+
+/* ---------- Pagina de produs ---------- */
+.product-detail { display: grid; grid-template-columns: minmax(0, 6fr) minmax(0, 5fr); gap: 48px; padding-block: 16px 40px; }
+.product-detail-img img { width: 100%; aspect-ratio: 1 / 1; object-fit: cover; border-radius: var(--radius); background: var(--grey-100); }
+.product-detail-info h1 { margin-bottom: 8px; }
+.rating-link { display: inline-flex; align-items: center; gap: 6px; color: var(--grey-700); text-decoration: none; font-size: 14px; }
+.rating-link:hover span:last-child { text-decoration: underline; }
+.lead { font-size: 18px; color: var(--grey-700); }
+.stock { font-weight: 700; color: var(--success); margin-bottom: 12px; }
+.stock-low { color: var(--warn); }
+.add-form { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 28px; }
+.add-form label { font-weight: 600; }
+.add-form input { width: 80px; }
+.specs { margin: 0; border-top: 1px solid var(--grey-100); }
+.specs div { display: grid; grid-template-columns: 120px minmax(0, 1fr); gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--grey-100); }
+.specs dt { color: var(--grey-500); }
+.specs dd { margin: 0; font-weight: 600; }
+@media (max-width: 820px) { .product-detail { grid-template-columns: minmax(0, 1fr); gap: 24px; } }
+
+.product-description { max-width: 70ch; padding-bottom: 32px; }
+.product-description p { font-size: 17px; color: var(--grey-700); }
+
+.reviews { padding-block: 32px; border-top: 1px solid var(--grey-100); }
+.reviews-head { display: flex; align-items: baseline; justify-content: space-between; flex-wrap: wrap; gap: 8px 24px; margin-bottom: 20px; }
+.reviews-head p { margin: 0; }
+.reviews-grid { display: grid; grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); gap: 32px; align-items: start; }
+.review-list { display: grid; gap: 14px; }
+.review { background: var(--white); border: 1px solid var(--grey-100); border-radius: var(--radius); padding: 16px 18px; }
+.review header { display: flex; justify-content: space-between; gap: 12px; margin-bottom: 6px; }
+.review p { margin: 0; color: var(--grey-700); }
+@media (max-width: 820px) { .reviews-grid { grid-template-columns: minmax(0, 1fr); } }
+
+.rating-fieldset { border: 0; padding: 0; margin: 0 0 14px; }
+.rating-fieldset legend { font-weight: 600; margin-bottom: 4px; padding: 0; }
+.rating-input { display: flex; flex-direction: row-reverse; justify-content: flex-end; gap: 2px; }
+.rating-input input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+.rating-input label { font-size: 28px; color: var(--grey-300); cursor: pointer; margin: 0; line-height: 1; }
+.rating-input input:checked ~ label,
+.rating-input label:hover,
+.rating-input label:hover ~ label { color: var(--star); }
+.rating-input input:focus-visible + label { outline: 2px solid var(--blue); border-radius: 4px; }
+
+.related { padding-block: 32px 64px; }
+
+/* ---------- Formulare și carduri ---------- */
+.card { background: var(--white); border: 1px solid var(--grey-100); border-radius: var(--radius); padding: 24px; }
+label { display: block; font-weight: 600; margin-bottom: 6px; }
+input[type="text"], input[type="email"], input[type="tel"], input[type="password"], input[type="number"], select, textarea {
+  width: 100%; padding: 10px 12px; border: 1px solid var(--grey-300); border-radius: var(--radius-small);
+  background: var(--white); color: var(--ink); font: inherit; margin-bottom: 14px;
+}
+input:focus, select:focus, textarea:focus { outline: none; border-color: var(--blue); box-shadow: 0 0 0 3px var(--blue-soft); }
+.add-form input[type="number"] { width: 80px; margin-bottom: 0; }
+.qty-form input[type="number"] { width: 70px; margin-bottom: 0; }
+textarea { resize: vertical; }
+.field-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 16px; }
+.field-wide { grid-column: 1 / -1; }
+@media (max-width: 600px) { .field-grid { grid-template-columns: minmax(0, 1fr); } }
+
+/* ---------- Coș și comandă ---------- */
+.narrow-page { padding-block: 32px 72px; }
+.small-page { max-width: 640px; }
+.cart-layout { display: grid; grid-template-columns: minmax(0, 1fr) 340px; gap: 28px; align-items: start; }
+@media (max-width: 900px) { .cart-layout { grid-template-columns: minmax(0, 1fr); } }
+.cart-items { display: grid; gap: 12px; }
+.cart-item { display: grid; grid-template-columns: 88px minmax(0, 1fr) auto auto auto; align-items: center; gap: 16px; background: var(--white); border: 1px solid var(--grey-100); border-radius: var(--radius); padding: 12px 16px 12px 12px; }
+.cart-item-img img { width: 88px; height: 88px; object-fit: cover; border-radius: var(--radius-small); }
+.cart-item-info { display: flex; flex-direction: column; min-width: 0; }
+.cart-item-name { color: var(--ink); font-weight: 700; text-decoration: none; }
+.cart-item-name:hover { color: var(--blue); }
+.qty-form { display: flex; gap: 6px; align-items: center; }
+.cart-item-total { font-weight: 700; font-variant-numeric: tabular-nums; min-width: 90px; text-align: right; }
+@media (max-width: 700px) {
+  .cart-item { grid-template-columns: 72px minmax(0, 1fr) auto; }
+  .cart-item-img img { width: 72px; height: 72px; }
+  .qty-form { grid-column: 2; }
+  .cart-item-total { grid-column: 3; grid-row: 1; }
+}
+
+.summary { position: sticky; top: 88px; }
+.summary dl { margin: 0 0 16px; }
+.summary dl div { display: flex; justify-content: space-between; padding: 6px 0; }
+.summary dt { color: var(--grey-700); }
+.summary dd { margin: 0; font-variant-numeric: tabular-nums; }
+.summary-total { border-top: 1px solid var(--grey-100); margin-top: 6px; padding-top: 12px !important; font-weight: 700; font-size: 18px; }
+.summary .btn + .btn { margin-top: 10px; }
+.summary-items { list-style: none; padding: 0; margin: 0 0 12px; border-bottom: 1px solid var(--grey-100); }
+.summary-items li { display: flex; justify-content: space-between; gap: 12px; padding: 6px 0; font-size: 15px; }
+.summary-items li span:last-child { white-space: nowrap; font-variant-numeric: tabular-nums; }
+
+.checkout-form h2 { font-size: 20px; margin-top: 8px; }
+.pay-options { display: grid; gap: 10px; margin-bottom: 20px; }
+.pay-option { display: flex; gap: 12px; align-items: flex-start; padding: 14px 16px; border: 1px solid var(--grey-300); border-radius: var(--radius-small); cursor: pointer; font-weight: 400; margin: 0; }
+.pay-option input { margin-top: 5px; accent-color: var(--blue); }
+.pay-option span { display: flex; flex-direction: column; }
+.pay-option:has(input:checked) { border-color: var(--blue); background: var(--blue-soft); }
+
+.payment-card, .done-card { text-align: left; }
+.sim-note { background: var(--blue-soft); border-radius: var(--radius-small); padding: 14px 16px; margin-bottom: 20px; color: var(--blue-dark); }
+.payment-actions { display: flex; gap: 12px; flex-wrap: wrap; }
+.status-pill { display: inline-block; padding: 4px 12px; border-radius: 999px; font-weight: 700; font-size: 14px; background: var(--grey-100); color: var(--grey-700); }
+.status-platita, .status-confirmata, .status-livrata { background: var(--success-soft); color: var(--success); }
+.status-asteptare_plata { background: #fdf1dc; color: var(--warn); }
+.status-anulata { background: var(--danger-soft); color: var(--danger); }
+.done-card h2 { font-size: 20px; margin-top: 20px; }
+
+.login-card { margin-top: 24px; }
+
+.credits-list { list-style: none; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 16px; }
+.credits-list img { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; border-radius: var(--radius-small); margin-bottom: 4px; }
+.credits-list span { font-size: 14px; color: var(--grey-700); }
+
+/* ---------- Administrare ---------- */
+.admin-layout { display: grid; grid-template-columns: 220px minmax(0, 1fr); gap: 28px; padding-block: 28px 64px; align-items: start; }
+.admin-side { background: var(--ink); color: var(--white); border-radius: var(--radius); padding: 20px 16px; position: sticky; top: 88px; }
+.admin-user { display: flex; flex-direction: column; padding: 0 8px 14px; border-bottom: 1px solid rgba(255, 255, 255, .12); margin-bottom: 10px; }
+.admin-user .muted { color: #aab2bd; }
+.admin-nav { display: grid; gap: 2px; margin-bottom: 16px; }
+.admin-nav a { color: #d5dae1; text-decoration: none; padding: 9px 10px; border-radius: var(--radius-small); font-weight: 600; }
+.admin-nav a:hover { background: rgba(255, 255, 255, .08); color: var(--white); }
+.admin-nav a.active { background: var(--blue); color: var(--white); }
+.admin-side .btn-ghost { color: #d5dae1; border-color: rgba(255, 255, 255, .25); }
+.admin-side .btn-ghost:hover { background: rgba(255, 255, 255, .08); color: var(--white); }
+@media (max-width: 820px) {
+  .admin-layout { grid-template-columns: minmax(0, 1fr); }
+  .admin-side { position: static; display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+  .admin-user { border: 0; padding: 0 8px 0 0; margin: 0; }
+  .admin-nav { display: flex; flex-wrap: wrap; margin: 0; flex: 1; }
+  .admin-side form { width: auto; }
+}
+.admin-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-bottom: 20px; }
+.admin-head h1 { margin: 0; font-size: 30px; }
+.table-wrap { overflow-x: auto; background: var(--white); border: 1px solid var(--grey-100); border-radius: var(--radius); }
+.admin-table { width: 100%; border-collapse: collapse; font-size: 15px; }
+.admin-table th { text-align: left; font-size: 13px; text-transform: uppercase; letter-spacing: .05em; color: var(--grey-500); padding: 12px 14px; border-bottom: 1px solid var(--grey-100); white-space: nowrap; }
+.admin-table td { padding: 10px 14px; border-bottom: 1px solid var(--grey-100); vertical-align: middle; }
+.admin-table tr:last-child td { border-bottom: 0; }
+.admin-table .num { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.admin-table a { color: var(--ink); font-weight: 600; text-decoration: none; }
+.admin-table a:hover { color: var(--blue); }
+.admin-table select { margin: 0; padding: 6px 8px; min-width: 170px; }
+.thumb { width: 52px; height: 52px; object-fit: cover; border-radius: var(--radius-small); }
+.thumb-large { width: 120px; height: 120px; object-fit: cover; border-radius: var(--radius-small); }
+.row-actions { display: flex; gap: 8px; justify-content: flex-end; }
+.product-form .btn-large { margin-top: 8px; }
+.image-field { display: flex; gap: 16px; align-items: flex-start; margin-bottom: 14px; }
+.image-field input[type="file"] { margin-bottom: 4px; }
+.admin-split { display: grid; grid-template-columns: minmax(0, 1fr) 300px; gap: 24px; align-items: start; }
+@media (max-width: 900px) { .admin-split { grid-template-columns: minmax(0, 1fr); } }
+.role-pill { display: inline-block; padding: 2px 10px; border-radius: 999px; font-size: 13px; font-weight: 700; background: var(--grey-100); color: var(--grey-700); }
+.role-admin { background: var(--blue-soft); color: var(--blue-dark); }
+
+/* ---------- Conturi de clienți ---------- */
+.center { text-align: center; }
+.btn-google { background: var(--white); color: var(--ink); border-color: var(--grey-300); gap: 10px; }
+.btn-google:hover { background: var(--grey-50); border-color: var(--grey-500); color: var(--ink); }
+.btn-google.is-disabled { opacity: .55; }
+.btn-google + .muted { margin-top: 8px; }
+.or-divider { display: flex; align-items: center; gap: 12px; color: var(--grey-500); font-size: 14px; margin: 20px 0; }
+.or-divider::before, .or-divider::after { content: ""; flex: 1; height: 1px; background: var(--grey-100); }
+.login-switch { text-align: center; margin: 18px 0 0; }
+.login-hint { background: var(--blue-soft); color: var(--blue-dark); padding: 12px 14px; border-radius: var(--radius-small); }
+.check { display: flex; gap: 10px; align-items: flex-start; font-weight: 400; margin-bottom: 14px; cursor: pointer; }
+.check input { margin-top: 5px; accent-color: var(--blue); flex-shrink: 0; }
+.field-note { margin: -8px 0 14px; }
+.btn-danger-solid { background: var(--danger); border-color: var(--danger); }
+.btn-danger-solid:hover { background: #8f1e18; border-color: #8f1e18; }
+.back-link { display: inline-block; margin-bottom: 12px; text-decoration: none; font-weight: 600; }
+.done-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+
+.account-layout { display: grid; grid-template-columns: 230px minmax(0, 1fr); gap: 28px; padding-block: 28px 72px; align-items: start; }
+.account-side { background: var(--white); border: 1px solid var(--grey-100); border-radius: var(--radius); padding: 18px 14px; position: sticky; top: 88px; }
+.account-hello { display: flex; flex-direction: column; padding: 0 8px 12px; margin-bottom: 8px; border-bottom: 1px solid var(--grey-100); }
+.account-nav { display: grid; gap: 2px; margin-bottom: 14px; }
+.account-nav a { color: var(--grey-700); text-decoration: none; padding: 9px 10px; border-radius: var(--radius-small); font-weight: 600; }
+.account-nav a:hover { background: var(--grey-50); color: var(--ink); }
+.account-nav a.active { background: var(--blue-soft); color: var(--blue-dark); }
+.account-main h1 { font-size: 30px; }
+.account-section { margin-bottom: 24px; }
+.account-section h2 { font-size: 20px; }
+@media (max-width: 820px) {
+  .account-layout { grid-template-columns: minmax(0, 1fr); }
+  .account-side { position: static; }
+  .account-nav { display: flex; overflow-x: auto; scrollbar-width: none; }
+  .account-nav a { white-space: nowrap; }
+}
+
+.order-list { display: grid; gap: 10px; }
+.order-row { display: grid; grid-template-columns: 56px minmax(0, 1fr) auto auto; align-items: center; gap: 16px; background: var(--white); border: 1px solid var(--grey-100); border-radius: var(--radius); padding: 14px 18px; color: var(--ink); text-decoration: none; transition: border-color .15s, box-shadow .15s; }
+.order-row:hover { border-color: var(--grey-300); box-shadow: var(--shadow); }
+.order-id { font-family: var(--font-display); font-weight: 700; color: var(--grey-500); }
+.order-what { display: flex; flex-direction: column; min-width: 0; }
+.order-total { font-weight: 700; font-variant-numeric: tabular-nums; min-width: 90px; text-align: right; }
+@media (max-width: 640px) {
+  .order-row { grid-template-columns: minmax(0, 1fr) auto; gap: 8px 12px; }
+  .order-id { display: none; }
+  .order-row .status-pill { grid-row: 2; }
+  .order-total { grid-row: 2; grid-column: 2; }
+}
+
+.address-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 14px; margin-bottom: 24px; }
+.address-card { padding: 18px; display: flex; flex-direction: column; }
+.address-card.is-default { border-color: var(--blue); }
+.address-card header { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-bottom: 6px; }
+.address-card p { color: var(--grey-700); flex: 1; }
+.address-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+.empty-inline p { margin-bottom: 6px; }
+.danger-zone { border-color: #f1c9c6; }
+.danger-zone h2 { color: var(--danger); }
+
+.prose { max-width: 760px; }
+.prose h2 { font-size: 22px; margin-top: 28px; }
+.prose ul { padding-left: 20px; }
+.prose li { margin-bottom: 6px; }
+.draft-note { background: #fdf1dc; color: #6d4100; border-left: 4px solid var(--warn); padding: 12px 16px; border-radius: var(--radius-small); }
+
+/* ---------- Clienți în administrare ---------- */
+.search-form { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.search-form input[type="search"] { width: 300px; max-width: 100%; margin: 0; padding: 9px 12px; border: 1px solid var(--grey-300); border-radius: var(--radius-small); font: inherit; }
+.search-form input[type="search"]:focus { outline: none; border-color: var(--blue); box-shadow: 0 0 0 3px var(--blue-soft); }
+.pill-row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.customer-grid { display: grid; grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); gap: 24px; align-items: start; }
+@media (max-width: 1000px) { .customer-grid { grid-template-columns: minmax(0, 1fr); } }
+.address-edit { border: 1px solid var(--grey-100); border-radius: var(--radius-small); padding: 12px 14px; margin-bottom: 10px; }
+.address-edit summary { display: flex; justify-content: space-between; gap: 12px; cursor: pointer; list-style: none; }
+.address-edit summary::-webkit-details-marker { display: none; }
+.address-edit[open] summary { margin-bottom: 12px; }
+.address-edit .address-actions { margin-top: 10px; }
+.address-new summary { color: var(--blue); }
+.link-like { color: var(--blue); font-weight: 600; font-size: 14px; white-space: nowrap; }
+.danger-inline { border-top: 1px solid var(--grey-100); margin-top: 18px; padding-top: 16px; }
+.danger-inline h3 { color: var(--danger); }
+.log-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+.log-list li { display: flex; flex-direction: column; border-left: 3px solid var(--blue-soft); padding-left: 10px; font-size: 15px; }
+
+/* ---------- Subsol ---------- */
+.site-footer { background: var(--ink); color: #c9ced6; padding-top: 44px; }
+.site-footer a { color: #c9ced6; text-decoration: none; }
+.site-footer a:hover { color: var(--white); }
+.footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 32px; padding-bottom: 32px; }
+.footer-grid h4 { color: var(--white); font-size: 15px; }
+.footer-grid ul { list-style: none; padding: 0; margin: 0; display: grid; gap: 6px; }
+.logo-footer { color: var(--white); margin-bottom: 4px; }
+.logo-footer span { color: #7fb0ec; }
+.site-footer .muted { color: #9aa3ae; }
+.footer-note { border-top: 1px solid rgba(255, 255, 255, .1); padding-block: 16px; font-size: 13px; color: #9aa3ae; }
+@media (max-width: 640px) { .footer-grid { grid-template-columns: 1fr 1fr; } .footer-grid > div:first-child { grid-column: 1 / -1; } }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  * { transition: none !important; }
+}
+
+/* ---------- Doar pentru demo ---------- */
+[hidden] { display: none !important; }
+.demo-bar { background: var(--blue-soft); color: var(--blue-dark); font-size: 13.5px; text-align: center; padding: 7px 16px; }
+.demo-hint { background: var(--blue-soft); color: var(--blue-dark); padding: 10px 14px; border-radius: var(--radius-small); }
+.toast { position: fixed; left: 50%; bottom: calc(20px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%); background: var(--ink); color: var(--white); padding: 12px 18px; border-radius: var(--radius-small); box-shadow: var(--shadow); font-weight: 600; z-index: 30; max-width: calc(100% - 32px); }
+.json-box { background: var(--grey-50); border: 1px solid var(--grey-100); border-radius: var(--radius-small); padding: 12px; font-size: 13px; max-height: 320px; overflow: auto; white-space: pre-wrap; word-break: break-word; margin: 14px 0 10px; }
+button[data-armed] { background: var(--danger); border-color: var(--danger); color: var(--white); }
+.footer-note { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.footer-note .link-button { color: #9aa3ae; font-size: 13px; }
+.footer-note .link-button:hover { color: var(--white); }
+
+</style>
+</head>
+<body>
+
+<div class="demo-bar"><strong>Versiune demo.</strong> Totul funcționează, dar datele rămân doar în acest browser. Nu se trimite nicio comandă și nu se plătește nimic.</div>
+
+<header class="site-header">
+  <div class="container header-row">
+    <a href="#acasa" class="logo" aria-label="MobilaTa, pagina principală">Mobila<span>Ta</span></a>
+    <nav class="main-nav" aria-label="Categorii">
+      <button type="button" class="nav-toggle" id="nav-toggle" aria-expanded="false" aria-controls="nav-links">
+        Categorii
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
+      </button>
+      <div class="nav-links" id="nav-links"></div>
+    </nav>
+    <div class="header-actions" id="actions"></div>
+  </div>
+</header>
+
+<main id="app"></main>
+
+<footer class="site-footer">
+  <div class="container footer-grid">
+    <div>
+      <p class="logo logo-footer">Mobila<span>Ta</span></p>
+      <p class="muted">Mobila ta, de la noi.</p>
+    </div>
+    <div>
+      <h4>Categorii</h4>
+      <ul id="footer-cats"></ul>
+    </div>
+    <div>
+      <h4>Magazin</h4>
+      <ul>
+        <li><a href="#cos">Coșul meu</a></li>
+        <li><a href="#contul-meu">Contul meu</a></li>
+        <li><a href="#confidentialitate">Confidențialitate</a></li>
+        <li><a href="#credite">Credite foto</a></li>
+        <li><a href="#admin-autentificare">Acces echipă</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="container footer-note">
+    <span>Magazin demonstrativ, proiect de practică. Produsele, prețurile și recenziile sunt exemple.</span>
+    <button type="button" class="link-button" data-action="reset" data-confirm="Sigur? Apasă din nou">Resetează demo-ul</button>
+  </div>
+</footer>
+
+<div class="toast" id="toast" role="status" hidden></div>
+
+<script type="application/json" id="seed">{"categories": [{"id": 1, "slug": "living", "name": "Living", "description": "Canapele, fotolii și mese pentru camera în care stai cel mai mult.", "image": "img/cat-living.jpg"}, {"id": 2, "slug": "dormitor", "name": "Dormitor", "description": "Paturi, noptiere și dulapuri pentru un somn liniștit.", "image": "img/cat-dormitor.jpg"}, {"id": 3, "slug": "bucatarie-dining", "name": "Bucătărie și dining", "description": "Mese, scaune și bufete pentru mesele în familie.", "image": "img/cat-dining.jpg"}, {"id": 4, "slug": "gradina", "name": "Grădină", "description": "Mobilier de exterior pentru terasă, grădină și balcon.", "image": "img/cat-gradina.jpg"}, {"id": 5, "slug": "birou", "name": "Birou", "description": "Birouri, scaune și biblioteci pentru lucrul de acasă.", "image": "img/cat-birou.jpg"}], "products": [{"id": 1, "slug": "canapea-oslo-3-locuri", "name": "Canapea Oslo, 3 locuri", "short_desc": "Canapea pe trei locuri, cu perne moi și picioare din lemn masiv.", "description": "Oslo are linii simple și un șezut adânc, bun pentru serile lungi de film. Pernele de spătar sunt detașabile, iar husa se curăță ușor cu o lavetă umedă.", "price": 3299, "material": "Stofă țesută, cadru din lemn de pin, picioare din stejar", "dimensions": "220 × 92 × 84 cm", "color": "Gri deschis", "stock": 6, "image": "img/canapea.jpg", "cat": "living", "avg": 4.5, "n": 2, "reviews": [{"author": "Andreea M.", "rating": 5, "text": "Exact ca în poze. Livrarea a venit la timp, iar montajul a durat mai puțin decât mă așteptam."}, {"author": "Mihai P.", "rating": 4, "text": "Frumos și bine făcut. Culoarea e puțin mai închisă decât în poză."}]}, {"id": 2, "slug": "fotoliu-bergen", "name": "Fotoliu Bergen", "short_desc": "Fotoliu clasic cu spătar înalt, pentru colțul tău de citit.", "description": "Bergen combină un design clasic cu un șezut ferm, care își păstrează forma în timp. Se potrivește lângă o bibliotecă sau lângă fereastră.", "price": 1499, "material": "Piele ecologică, cadru din lemn de fag", "dimensions": "78 × 80 × 98 cm", "color": "Maro coniac", "stock": 8, "image": "img/fotoliu.jpg", "cat": "living", "avg": 4.0, "n": 3, "reviews": [{"author": "Cristian D.", "rating": 4, "text": "Mulțumit în general, doar instrucțiunile de montaj puteau fi mai clare."}, {"author": "Elena S.", "rating": 5, "text": "Arată superb în casă și se simte solid. Am primit multe complimente."}, {"author": "Radu T.", "rating": 3, "text": "E ok, dar a ajuns cu o săptămână mai târziu decât era estimat."}]}, {"id": 3, "slug": "masuta-de-cafea-nordic", "name": "Măsuță de cafea Nordic", "short_desc": "Blat din sticlă și raft din stejar pentru reviste și cărți.", "description": "Nordic are un blat transparent care face camera să pară mai aerisită. Raftul de jos îți ține la îndemână telecomanda, cărțile și revistele.", "price": 899, "material": "Stejar masiv și sticlă securizată de 8 mm", "dimensions": "110 × 60 × 45 cm", "color": "Stejar natur", "stock": 12, "image": "img/masuta-cafea.jpg", "cat": "living", "avg": 4.5, "n": 2, "reviews": [{"author": "Alina C.", "rating": 5, "text": "Al doilea produs pe care îl iau de aici. Aceeași calitate bună."}, {"author": "Bogdan V.", "rating": 4, "text": "Solid și comod. Aș fi vrut să aibă și alte variante de culoare."}]}, {"id": 4, "slug": "comoda-tv-linea", "name": "Comodă TV Linea", "short_desc": "Comodă joasă pentru televizor, cu spațiu ascuns pentru cabluri.", "description": "Linea are două uși cu închidere lentă și un orificiu în spate pentru cabluri. Suportă televizoare de până la 65 de inch.", "price": 1199, "material": "PAL melaminat, picioare din lemn de fag", "dimensions": "160 × 40 × 55 cm", "color": "Alb mat", "stock": 5, "image": "img/comoda-tv.jpg", "cat": "living", "avg": 4.3, "n": 3, "reviews": [{"author": "Mihai P.", "rating": 4, "text": "Frumos și bine făcut. Culoarea e puțin mai închisă decât în poză."}, {"author": "Ioana R.", "rating": 5, "text": "Calitate foarte bună pentru preț. Îl recomand fără ezitare."}, {"author": "Cristian D.", "rating": 4, "text": "Mulțumit în general, doar instrucțiunile de montaj puteau fi mai clare."}]}, {"id": 5, "slug": "pat-matrimonial-aria-160-200", "name": "Pat matrimonial Aria, 160 × 200", "short_desc": "Pat jos, din lemn masiv, pentru saltele de 160 × 200 cm.", "description": "Aria are o structură joasă, în stil japonez, și un somier din lamele de lemn. Salteaua nu este inclusă.", "price": 2799, "material": "Lemn masiv de pin", "dimensions": "170 × 210 × 30 cm", "color": "Lemn natur", "stock": 4, "image": "img/pat.jpg", "cat": "dormitor", "avg": 4.0, "n": 2, "reviews": [{"author": "Elena S.", "rating": 5, "text": "Arată superb în casă și se simte solid. Am primit multe complimente."}, {"author": "Radu T.", "rating": 3, "text": "E ok, dar a ajuns cu o săptămână mai târziu decât era estimat."}]}, {"id": 6, "slug": "noptiera-luna", "name": "Noptieră Luna", "short_desc": "Noptieră cu trei sertare și mânere din alamă.", "description": "Luna aduce o pată de culoare în dormitor. Sertarele glisează pe șine metalice și au loc pentru cărți, ochelari și încărcătoare.", "price": 549, "material": "MDF vopsit, mânere din alamă", "dimensions": "50 × 40 × 62 cm", "color": "Albastru petrol", "stock": 15, "image": "img/noptiera.jpg", "cat": "dormitor", "avg": 4.3, "n": 3, "reviews": [{"author": "Bogdan V.", "rating": 4, "text": "Solid și comod. Aș fi vrut să aibă și alte variante de culoare."}, {"author": "Andreea M.", "rating": 5, "text": "Exact ca în poze. Livrarea a venit la timp, iar montajul a durat mai puțin decât mă așteptam."}, {"author": "Mihai P.", "rating": 4, "text": "Frumos și bine făcut. Culoarea e puțin mai închisă decât în poză."}]}, {"id": 7, "slug": "dulap-sofia-2-usi", "name": "Dulap Sofia, 2 uși", "short_desc": "Dulap cu două uși, bară de haine și sertar la bază.", "description": "Sofia are o bară pentru umerașe, un raft interior și un sertar larg la bază. Vine cu kit de prindere de perete.", "price": 2399, "material": "Lemn masiv de nuc", "dimensions": "100 × 58 × 190 cm", "color": "Nuc", "stock": 3, "image": "img/dulap.jpg", "cat": "dormitor", "avg": 4.5, "n": 2, "reviews": [{"author": "Ioana R.", "rating": 5, "text": "Calitate foarte bună pentru preț. Îl recomand fără ezitare."}, {"author": "Cristian D.", "rating": 4, "text": "Mulțumit în general, doar instrucțiunile de montaj puteau fi mai clare."}]}, {"id": 8, "slug": "comoda-vera-6-sertare", "name": "Comodă Vera, 6 sertare", "short_desc": "Comodă largă cu șase sertare, pentru haine și lenjerii.", "description": "Vera are sertare adânci, cu îmbinări clasice în coadă de rândunică. Blatul e destul de lat pentru o oglindă și câteva decorațiuni.", "price": 1899, "material": "Lemn masiv de mango", "dimensions": "140 × 45 × 80 cm", "color": "Maro mediu", "stock": 7, "image": "img/comoda.jpg", "cat": "dormitor", "avg": 4.0, "n": 3, "reviews": [{"author": "Radu T.", "rating": 3, "text": "E ok, dar a ajuns cu o săptămână mai târziu decât era estimat."}, {"author": "Alina C.", "rating": 5, "text": "Al doilea produs pe care îl iau de aici. Aceeași calitate bună."}, {"author": "Bogdan V.", "rating": 4, "text": "Solid și comod. Aș fi vrut să aibă și alte variante de culoare."}]}, {"id": 9, "slug": "masa-extensibila-toscana", "name": "Masă extensibilă Toscana", "short_desc": "Masă pentru 6 persoane, extensibilă la 8.", "description": "Toscana se lungește de la 160 la 200 cm cu o placă ascunsă sub blat. E destul de solidă pentru mesele de sărbători.", "price": 2499, "material": "Lemn masiv de fag", "dimensions": "160–200 × 90 × 76 cm", "color": "Fag natur", "stock": 4, "image": "img/masa-dining.jpg", "cat": "bucatarie-dining", "avg": 4.5, "n": 2, "reviews": [{"author": "Andreea M.", "rating": 5, "text": "Exact ca în poze. Livrarea a venit la timp, iar montajul a durat mai puțin decât mă așteptam."}, {"author": "Mihai P.", "rating": 4, "text": "Frumos și bine făcut. Culoarea e puțin mai închisă decât în poză."}]}, {"id": 10, "slug": "scaun-tapitat-milano", "name": "Scaun tapițat Milano", "short_desc": "Scaun comod, cu spătar rotunjit și picioare din stejar.", "description": "Milano are spătar ergonomic și un șezut tapițat gros. Se asortează cu masa Toscana.", "price": 459, "material": "Stofă, picioare din lemn de stejar", "dimensions": "52 × 58 × 92 cm", "color": "Gri", "stock": 24, "image": "img/scaun-tapitat.jpg", "cat": "bucatarie-dining", "avg": 4.0, "n": 3, "reviews": [{"author": "Cristian D.", "rating": 4, "text": "Mulțumit în general, doar instrucțiunile de montaj puteau fi mai clare."}, {"author": "Elena S.", "rating": 5, "text": "Arată superb în casă și se simte solid. Am primit multe complimente."}, {"author": "Radu T.", "rating": 3, "text": "E ok, dar a ajuns cu o săptămână mai târziu decât era estimat."}]}, {"id": 11, "slug": "bufet-provence", "name": "Bufet Provence", "short_desc": "Bufet în stil rustic, cu două uși și două sertare.", "description": "Provence ține la vedere vesela frumoasă și ascunde restul. Finisajul alb antic merge bine cu mesele din lemn natur.", "price": 1699, "material": "Lemn de pin vopsit, blat din lemn", "dimensions": "110 × 40 × 85 cm", "color": "Alb antic", "stock": 4, "image": "img/bufet.jpg", "cat": "bucatarie-dining", "avg": 4.5, "n": 2, "reviews": [{"author": "Alina C.", "rating": 5, "text": "Al doilea produs pe care îl iau de aici. Aceeași calitate bună."}, {"author": "Bogdan V.", "rating": 4, "text": "Solid și comod. Aș fi vrut să aibă și alte variante de culoare."}]}, {"id": 12, "slug": "scaun-de-bar-loft", "name": "Scaun de bar Loft", "short_desc": "Scaun înalt pentru insula din bucătărie sau pentru bar.", "description": "Loft are un suport pentru picioare și un șezut rotund tapițat. Înălțimea de 75 cm se potrivește la blaturile de bar standard.", "price": 389, "material": "Șezut tapițat, cadru metalic", "dimensions": "40 × 40 × 75 cm", "color": "Roșu cărămiziu", "stock": 18, "image": "img/scaun-bar.jpg", "cat": "bucatarie-dining", "avg": 4.3, "n": 3, "reviews": [{"author": "Mihai P.", "rating": 4, "text": "Frumos și bine făcut. Culoarea e puțin mai închisă decât în poză."}, {"author": "Ioana R.", "rating": 5, "text": "Calitate foarte bună pentru preț. Îl recomand fără ezitare."}, {"author": "Cristian D.", "rating": 4, "text": "Mulțumit în general, doar instrucțiunile de montaj puteau fi mai clare."}]}, {"id": 13, "slug": "set-lounge-riviera", "name": "Set lounge Riviera", "short_desc": "Canapea de exterior din ratan, pentru terasă sau balcon.", "description": "Riviera rezistă la soare și ploaie, iar husele pernelor se scot și se spală. Pune-o pe terasă și ai un living în aer liber.", "price": 4299, "material": "Ratan sintetic, perne cu husă impermeabilă", "dimensions": "Canapea de 180 cm și perne decorative", "color": "Gri antracit", "stock": 3, "image": "img/set-lounge.jpg", "cat": "gradina", "avg": 4.0, "n": 2, "reviews": [{"author": "Elena S.", "rating": 5, "text": "Arată superb în casă și se simte solid. Am primit multe complimente."}, {"author": "Radu T.", "rating": 3, "text": "E ok, dar a ajuns cu o săptămână mai târziu decât era estimat."}]}, {"id": 14, "slug": "sezlong-costa-set-de-2", "name": "Șezlong Costa, set de 2", "short_desc": "Două șezlonguri din lemn, cu spătar reglabil.", "description": "Costa are spătarul reglabil în patru poziții. Lemnul de salcâm e tratat cu ulei și rezistă bine afară.", "price": 1299, "material": "Lemn de salcâm tratat pentru exterior", "dimensions": "190 × 60 × 35 cm (fiecare)", "color": "Lemn natur", "stock": 5, "image": "img/sezlong.jpg", "cat": "gradina", "avg": 4.3, "n": 3, "reviews": [{"author": "Bogdan V.", "rating": 4, "text": "Solid și comod. Aș fi vrut să aibă și alte variante de culoare."}, {"author": "Andreea M.", "rating": 5, "text": "Exact ca în poze. Livrarea a venit la timp, iar montajul a durat mai puțin decât mă așteptam."}, {"author": "Mihai P.", "rating": 4, "text": "Frumos și bine făcut. Culoarea e puțin mai închisă decât în poză."}]}, {"id": 15, "slug": "banca-de-gradina-parc", "name": "Bancă de grădină Parc", "short_desc": "Bancă clasică de parc, pentru trei persoane.", "description": "Parc are un cadru greu din fontă, care nu se clatină. Scândurile de pin sunt tratate împotriva umezelii.", "price": 799, "material": "Lemn de pin tratat, cadru din fontă", "dimensions": "150 × 60 × 80 cm", "color": "Maro", "stock": 9, "image": "img/banca.jpg", "cat": "gradina", "avg": 4.5, "n": 2, "reviews": [{"author": "Ioana R.", "rating": 5, "text": "Calitate foarte bună pentru preț. Îl recomand fără ezitare."}, {"author": "Cristian D.", "rating": 4, "text": "Mulțumit în general, doar instrucțiunile de montaj puteau fi mai clare."}]}, {"id": 16, "slug": "set-masa-de-gradina-terra", "name": "Set masă de grădină Terra", "short_desc": "Masă de exterior pentru 6 persoane, cu scaune incluse.", "description": "Terra e ușoară, dar stabilă, datorită cadrului din aluminiu. Scaunele se stivuiesc pentru depozitarea pe timpul iernii.", "price": 3499, "material": "Aluminiu și lemn tratat", "dimensions": "Masă de 180 × 90 cm și 6 scaune", "color": "Alb", "stock": 2, "image": "img/set-masa-gradina.jpg", "cat": "gradina", "avg": 4.0, "n": 3, "reviews": [{"author": "Radu T.", "rating": 3, "text": "E ok, dar a ajuns cu o săptămână mai târziu decât era estimat."}, {"author": "Alina C.", "rating": 5, "text": "Al doilea produs pe care îl iau de aici. Aceeași calitate bună."}, {"author": "Bogdan V.", "rating": 4, "text": "Solid și comod. Aș fi vrut să aibă și alte variante de culoare."}]}, {"id": 17, "slug": "birou-studio", "name": "Birou Studio", "short_desc": "Birou simplu, cu blat din stejar masiv.", "description": "Studio are un blat lat, cu loc pentru un monitor mare și laptop. Picioarele au bucșe reglabile pentru podelele denivelate.", "price": 1099, "material": "Blat din stejar masiv, picioare metalice", "dimensions": "140 × 70 × 75 cm", "color": "Stejar", "stock": 10, "image": "img/birou.jpg", "cat": "birou", "avg": 4.5, "n": 2, "reviews": [{"author": "Andreea M.", "rating": 5, "text": "Exact ca în poze. Livrarea a venit la timp, iar montajul a durat mai puțin decât mă așteptam."}, {"author": "Mihai P.", "rating": 4, "text": "Frumos și bine făcut. Culoarea e puțin mai închisă decât în poză."}]}, {"id": 18, "slug": "scaun-de-birou-flex", "name": "Scaun de birou Flex", "short_desc": "Scaun cu înălțime reglabilă, pentru lucrul de acasă.", "description": "Flex are un mecanism de înclinare cu blocare și înălțime reglabilă pe gaz. Roțile sunt potrivite pentru parchet.", "price": 899, "material": "Piele ecologică, bază cu roți", "dimensions": "62 × 60 × 88–98 cm", "color": "Maro coniac", "stock": 14, "image": "img/scaun-birou.jpg", "cat": "birou", "avg": 4.0, "n": 3, "reviews": [{"author": "Cristian D.", "rating": 4, "text": "Mulțumit în general, doar instrucțiunile de montaj puteau fi mai clare."}, {"author": "Elena S.", "rating": 5, "text": "Arată superb în casă și se simte solid. Am primit multe complimente."}, {"author": "Radu T.", "rating": 3, "text": "E ok, dar a ajuns cu o săptămână mai târziu decât era estimat."}]}, {"id": 19, "slug": "biblioteca-archiva", "name": "Bibliotecă Archiva", "short_desc": "Bibliotecă mare, cu 20 de compartimente deschise.", "description": "Archiva are rafturi groase, care nu se îndoaie sub greutatea cărților. Se prinde de perete pentru siguranță.", "price": 1999, "material": "Lemn masiv de stejar", "dimensions": "200 × 35 × 200 cm", "color": "Stejar natur", "stock": 4, "image": "img/biblioteca.jpg", "cat": "birou", "avg": 4.5, "n": 2, "reviews": [{"author": "Alina C.", "rating": 5, "text": "Al doilea produs pe care îl iau de aici. Aceeași calitate bună."}, {"author": "Bogdan V.", "rating": 4, "text": "Solid și comod. Aș fi vrut să aibă și alte variante de culoare."}]}, {"id": 20, "slug": "birou-reglabil-rise", "name": "Birou reglabil Rise", "short_desc": "Birou electric, lucrezi și în picioare, și așezat.", "description": "Rise își schimbă înălțimea dintr-un buton și ține minte trei poziții. Motoarele sunt silențioase și ridică până la 100 kg.", "price": 2699, "material": "Blat din nuc, cadru electric cu două motoare", "dimensions": "140 × 70 × 62–127 cm", "color": "Nuc și negru", "stock": 6, "image": "img/birou-reglabil.jpg", "cat": "birou", "avg": 4.3, "n": 3, "reviews": [{"author": "Mihai P.", "rating": 4, "text": "Frumos și bine făcut. Culoarea e puțin mai închisă decât în poză."}, {"author": "Ioana R.", "rating": 5, "text": "Calitate foarte bună pentru preț. Îl recomand fără ezitare."}, {"author": "Cristian D.", "rating": 4, "text": "Mulțumit în general, doar instrucțiunile de montaj puteau fi mai clare."}]}], "credits": [["hero.jpg", "Prydumano Design"], ["cat-living.jpg", "Spacejoy"], ["cat-dormitor.jpg", "Spacejoy"], ["cat-dining.jpg", "Clay Banks"], ["cat-gradina.jpg", "sozina hope"], ["cat-birou.jpg", "Collov Home Design"], ["canapea.jpg", "Ambo Ampeng"], ["fotoliu.jpg", "Мария Травина"], ["masuta-cafea.jpg", "Connor Home"], ["comoda-tv.jpg", "JALG TV Stand"], ["pat.jpg", "Deconovo"], ["noptiera.jpg", "Megan Bucknall"], ["dulap.jpg", "Rumman Amin"], ["comoda.jpg", "khloe arledge"], ["masa-dining.jpg", "Costa Live"], ["scaun-tapitat.jpg", "Sam Moghadam"], ["bufet.jpg", "Toa Heftiba"], ["scaun-bar.jpg", "Oliver Frsh"], ["set-lounge.jpg", "Tomi Saputra"], ["sezlong.jpg", "roman raizen"], ["banca.jpg", "Sonder Quest"], ["set-masa-gradina.jpg", "Spacejoy"], ["birou.jpg", "Andrej Lišakov"], ["scaun-birou.jpg", "Kelly Sikkema"], ["biblioteca.jpg", "Pickawood"], ["birou-reglabil.jpg", "ergonofis"]]}</script>
+<script>
+// Categoriile stau pe un rând doar dacă încap întregi; altfel se strâng în butonul „Categorii”.
+window.setupCategoryNav = function () {
+  const header = document.querySelector('.site-header');
+  const links = document.getElementById('nav-links');
+  const toggle = document.getElementById('nav-toggle');
+  if (!header || !links || !toggle) return function () {};
+
+  function close() {
+    header.classList.remove('nav-open');
+    toggle.setAttribute('aria-expanded', 'false');
+  }
+  function fit() {
+    close();
+    header.classList.remove('nav-collapsed');
+    if (links.scrollWidth > links.clientWidth + 1) header.classList.add('nav-collapsed');
+  }
+
+  toggle.addEventListener('click', function () {
+    const open = header.classList.toggle('nav-open');
+    toggle.setAttribute('aria-expanded', String(open));
+  });
+  document.addEventListener('click', function (e) {
+    if (!header.contains(e.target) || e.target.closest('#nav-links a')) close();
+  });
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && header.classList.contains('nav-open')) { close(); toggle.focus(); }
+  });
+
+  let lastWidth = 0;
+  new ResizeObserver(function (entries) {
+    const width = entries[0].contentRect.width;
+    if (width !== lastWidth) { lastWidth = width; fit(); }
+  }).observe(header);
+  if (document.fonts) document.fonts.ready.then(fit);
+  fit();
+  return fit;
+};
+
+
+const SEED_TEXT = document.getElementById('seed').textContent;
+const KEY = 'mobilata-demo-v2';
+const PAY = { card: 'Card online', ramburs: 'Ramburs la livrare', transfer: 'Transfer bancar' };
+const PAY_HINT = {
+  card: 'Plătești pe pagina următoare. Acum e doar o simulare, fără bani reali.',
+  ramburs: 'Plătești curierului când primești coletul.',
+  transfer: 'Primești datele pentru transfer după ce plasezi comanda.',
+};
+const STATUS = { asteptare_plata: 'În așteptare plată', platita: 'Plătită', confirmata: 'Confirmată', livrata: 'Livrată', anulata: 'Anulată' };
+const IN_PROGRESS = ['asteptare_plata', 'platita', 'confirmata'];
+const ROLES = { admin: 'Administrator', manager: 'Gestionar produse' };
+const FREE_FROM = 1500, SHIPPING = 99;
+const EMAIL_RE = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
+const app = document.getElementById('app');
+
+// ---------- Ajutoare ----------
+const pad = n => String(n).padStart(2, '0');
+function now() { const d = new Date(); return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}`; }
+const esc = s => String(s ?? '').replace(/[&<>"']/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch]));
+const lei = v => String(Math.round(v)).replace(/\B(?=(\d{3})+(?!\d))/g, '.') + ' lei';
+const plural = (n, one, many) => `${n} ${n === 1 ? one : many}`;
+const firstName = name => String(name).split(' ')[0];
+const avg = p => p.reviews.length ? p.reviews.reduce((a, r) => a + r.rating, 0) / p.reviews.length : 0;
+function slugify(text) {
+  return String(text).normalize('NFKD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-zA-Z0-9]+/g, '-').replace(/^-+|-+$/g, '').toLowerCase() || 'produs';
+}
+function stars(rating, count) {
+  const full = Math.round(rating);
+  let s = `<span class="stars" aria-label="${rating.toFixed(1)} din 5 stele">`;
+  for (let i = 0; i < 5; i++) s += `<span class="star${i < full ? ' on' : ''}">★</span>`;
+  s += '</span>';
+  if (count !== undefined) s += `<span class="star-count">(${count})</span>`;
+  return s;
+}
+
+// ---------- Datele demo (rămân doar în acest browser) ----------
+function freshDb() {
+  const seed = JSON.parse(SEED_TEXT), t = now();
+  return {
+    categories: seed.categories,
+    products: seed.products.map(p => ({ ...p, created_at: t })),
+    credits: seed.credits,
+    users: [{ id: 1, username: 'admin', password: 'admin', role: 'admin', created_at: t }],
+    customers: [], addresses: [], orders: [], logs: [],
+    seq: { product: Math.max(...seed.products.map(p => p.id)) + 1, user: 2, customer: 1, address: 1, order: 1, log: 1 },
+  };
+}
+const freshSession = () => ({ cart: {}, customerId: null, staff: null, myOrders: [], flash: [], origin: null, clientQuery: '', afterLogin: null, afterStaff: null });
+function load(key) { try { return JSON.parse(localStorage.getItem(key)); } catch (e) { return null; } }
+let db = load(KEY) || freshDb();
+let sess = Object.assign(freshSession(), load(KEY + '-sesiune') || {});
+function save() {
+  try { localStorage.setItem(KEY, JSON.stringify(db)); localStorage.setItem(KEY + '-sesiune', JSON.stringify(sess)); } catch (e) {}
+}
+const nextId = t => db.seq[t]++;
+const cat = slug => db.categories.find(c => c.slug === slug);
+const product = id => db.products.find(p => p.id === id);
+const customer = () => db.customers.find(c => c.id === sess.customerId) || null;
+const staff = () => (sess.staff && db.users.find(u => u.id === sess.staff.id)) || null;
+const addressesOf = cid => db.addresses.filter(a => a.customer_id === cid).sort((a, b) => b.is_default - a.is_default || a.id - b.id);
+const ordersOf = cid => db.orders.filter(o => o.customer_id === cid).sort((a, b) => b.id - a.id);
+
+function flash(msg, kind = 'success') { sess.flash.push([kind, msg]); }
+function go(hash) {
+  if (location.hash.slice(1) === hash) route(); else location.hash = hash;
+}
+let toastTimer;
+function toast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.hidden = false;
+  clearTimeout(toastTimer); toastTimer = setTimeout(() => { t.hidden = true; }, 2600);
+}
+
+// ---------- Coș ----------
+function cartLines() {
+  const items = [];
+  for (const [id, qty] of Object.entries(sess.cart)) {
+    const p = product(+id);
+    const q = p ? Math.min(qty, p.stock) : 0;
+    if (q > 0) items.push({ p, qty: q, line: p.price * q });
+  }
+  const subtotal = items.reduce((a, i) => a + i.line, 0);
+  const shipping = subtotal === 0 || subtotal >= FREE_FROM ? 0 : SHIPPING;
+  return { items, subtotal, shipping, total: subtotal + shipping };
+}
+function addToCart(id, qty) {
+  const p = product(id);
+  const current = sess.cart[id] || 0, next = Math.min(current + qty, p.stock);
+  if (next <= current) { toast(`Nu mai avem „${p.name}” în stoc în cantitatea cerută.`); return; }
+  sess.cart[id] = next; save(); renderHeader(); toast(`Am adăugat „${p.name}” în coș.`);
+}
+
+// ---------- Bucăți comune ----------
+function productCard(p) {
+  return `<article class="product-card">
+    <a href="#p-${p.slug}" class="product-card-link">
+      <div class="product-card-img"><img src="${esc(p.image)}" alt="${esc(p.name)}" loading="lazy"></div>
+      <div class="product-card-body"><h3>${esc(p.name)}</h3><p class="product-card-desc">${esc(p.short_desc)}</p>
+        <div class="product-card-rating">${stars(avg(p), p.reviews.length)}</div></div>
+    </a>
+    <div class="product-card-foot"><span class="price">${lei(p.price)}</span>
+      ${p.stock > 0 ? `<button type="button" class="btn btn-small" data-add="${p.id}">Adaugă în coș</button>` : '<span class="out-of-stock">Stoc epuizat</span>'}
+    </div></article>`;
+}
+function orderRows(orders, origin, clientId) {
+  return `<div class="order-list">${orders.map(o => {
+    const n = o.items.reduce((a, i) => a + i.qty, 0);
+    return `<a href="#comanda-${o.id}" class="order-row" data-origin="${origin}" data-client="${clientId || ''}">
+      <span class="order-id">#${o.id}</span>
+      <span class="order-what"><strong>${esc(o.items[0]?.name || 'Comandă')}${n > 1 ? ` <span class="muted">și încă ${plural(n - 1, 'produs', 'produse')}</span>` : ''}</strong>
+        <span class="muted small">${o.created_at} · ${PAY[o.payment_method]}</span></span>
+      <span class="status-pill status-${o.status}">${STATUS[o.status]}</span>
+      <span class="order-total">${lei(o.total)}</span></a>`;
+  }).join('')}</div>`;
+}
+const errorsBox = errors => errors.length ? `<div class="flash flash-error"><ul>${errors.map(e => `<li>${esc(e)}</li>`).join('')}</ul></div>` : '';
+const googleButton = () => `<button type="button" class="btn btn-google btn-block" data-action="google">
+  <svg width="18" height="18" viewBox="0 0 48 48" aria-hidden="true"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.7 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.2-.1-2.3-.4-3.5z"/><path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.7 15.1 19 12 24 12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.1 26.7 36 24 36c-5.2 0-9.6-3.3-11.3-8l-6.5 5C9.5 39.6 16.2 44 24 44z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.2-2.2 4.2-4.1 5.6l6.2 5.2C37 39.2 44 34 44 24c0-1.2-.1-2.3-.4-3.5z"/></svg>
+  Continuă cu Google</button>
+  <p class="muted small center">În demo, butonul te conectează cu un cont Google de probă.</p>`;
+
+// ---------- Magazin ----------
+function viewHome() {
+  return `<section class="hero"><div class="container hero-grid"><div class="hero-text">
+      <p class="eyebrow">Magazin online de mobilă</p><h1>MobilaTa</h1><p class="slogan">Mobila ta, de la noi.</p>
+      <p class="hero-lede">Canapele, paturi, mese și tot ce-ți trebuie pentru casă, grădină și birou. Alegi online, noi îți aducem acasă.</p>
+      <a href="#categorii" class="btn btn-large" data-scroll="categorii">Alege o categorie</a></div>
+    <div class="hero-img"><img src="img/hero.jpg" alt="Living modern cu canapea gri și fereastră mare"></div></div></section>
+  <section class="categories" id="categorii"><div class="container">
+    <div class="section-head"><h2>Ce cauți azi?</h2><p class="muted">Alege o cameră și vezi toate produsele din ea.</p></div>
+    <div class="cat-grid">${db.categories.map(c => {
+      const n = db.products.filter(p => p.cat === c.slug).length;
+      return `<a href="#c-${c.slug}" class="cat-tile"><img src="${c.image}" alt="" loading="lazy">
+        <span class="cat-tile-label"><span class="cat-tile-name">${esc(c.name)}</span><span class="cat-tile-count">${plural(n, 'produs', 'produse')}</span></span>
+        <span class="cat-tile-arrow" aria-hidden="true">→</span></a>`;
+    }).join('')}</div></div></section>
+  <section class="perks"><div class="container perks-grid">
+    <div class="perk"><h3>Livrare gratuită</h3><p class="muted">La comenzile de peste 1.500 lei. Sub această sumă, livrarea costă 99 lei.</p></div>
+    <div class="perk"><h3>Plătești cum vrei</h3><p class="muted">Cu cardul online, ramburs la livrare sau prin transfer bancar.</p></div>
+    <div class="perk"><h3>Retur în 14 zile</h3><p class="muted">Dacă produsul nu ți se potrivește, îl poți returna.</p></div>
+  </div></section>`;
+}
+
+function viewCategory(slug) {
+  const c = cat(slug);
+  if (!c) return viewError(404);
+  const list = db.products.filter(p => p.cat === slug);
+  return `<section class="page-head" style="--head-img: url('${c.image}')"><div class="container">
+      <nav class="breadcrumb"><a href="#acasa">Acasă</a> <span>/</span> ${esc(c.name)}</nav>
+      <h1>${esc(c.name)}</h1><p>${esc(c.description)}</p></div></section>
+    <section class="container product-section">${list.length
+      ? `<p class="muted result-count">${plural(list.length, 'produs', 'produse')}</p><div class="product-grid">${list.map(productCard).join('')}</div>`
+      : `<div class="empty-state"><h2>Încă nu avem produse aici</h2><p class="muted">Revino curând sau uită-te în celelalte categorii.</p><a href="#categorii" class="btn">Toate categoriile</a></div>`}
+    </section>`;
+}
+
+function viewProduct(slug) {
+  const p = db.products.find(x => x.slug === slug);
+  if (!p) return viewError(404);
+  const c = cat(p.cat), a = avg(p);
+  const related = db.products.filter(x => x.cat === p.cat && x.id !== p.id).slice(0, 3);
+  const stock = p.stock <= 0 ? '<p class="stock stock-out">Stoc epuizat</p>'
+    : `<p class="stock ${p.stock <= 3 ? 'stock-low' : ''}">${p.stock <= 3 ? `Doar ${p.stock} în stoc` : 'În stoc'}</p>
+       <form novalidate class="add-form" data-form="add"><input type="hidden" name="id" value="${p.id}">
+         <label for="qty">Cantitate</label><input type="number" id="qty" name="qty" value="1" min="1" max="${p.stock}">
+         <button type="submit" class="btn btn-large">Adaugă în coș</button></form>`;
+  return `<div class="container">
+    <nav class="breadcrumb breadcrumb-plain"><a href="#acasa">Acasă</a> <span>/</span> <a href="#c-${c.slug}">${esc(c.name)}</a> <span>/</span> ${esc(p.name)}</nav>
+    <section class="product-detail">
+      <div class="product-detail-img"><img src="${esc(p.image)}" alt="${esc(p.name)}"></div>
+      <div class="product-detail-info"><h1>${esc(p.name)}</h1>
+        <a href="#recenzii" class="rating-link" data-scroll="recenzii">${stars(a, p.reviews.length)} <span>${a.toFixed(1)} din 5</span></a>
+        <p class="price price-big">${lei(p.price)}</p><p class="lead">${esc(p.short_desc)}</p>${stock}
+        <dl class="specs"><div><dt>Material</dt><dd>${esc(p.material || '–')}</dd></div><div><dt>Dimensiuni</dt><dd>${esc(p.dimensions || '–')}</dd></div><div><dt>Culoare</dt><dd>${esc(p.color || '–')}</dd></div></dl>
+      </div></section>
+    ${p.description ? `<section class="product-description"><h2>Despre produs</h2><p>${esc(p.description)}</p></section>` : ''}
+    <section class="reviews" id="recenzii">
+      <div class="reviews-head"><h2>Recenzii</h2><p>${stars(a)} <strong>${a.toFixed(1)}</strong> din 5, ${plural(p.reviews.length, 'recenzie', 'recenzii')}</p></div>
+      <div class="reviews-grid"><div class="review-list">${p.reviews.length ? p.reviews.slice().reverse().map(r =>
+        `<article class="review"><header><strong>${esc(r.author)}</strong>${stars(r.rating)}</header><p>${esc(r.text)}</p></article>`).join('')
+        : '<p class="muted">Încă nu există recenzii. Fii primul care scrie una.</p>'}</div>
+        <form novalidate class="review-form card" data-form="review"><h3>Scrie o recenzie</h3><input type="hidden" name="id" value="${p.id}">
+          <label for="author">Numele tău</label><input type="text" id="author" name="author" maxlength="60">
+          <fieldset class="rating-fieldset"><legend>Nota ta</legend><div class="rating-input">
+            ${[5, 4, 3, 2, 1].map(n => `<input type="radio" id="rating-${n}" name="rating" value="${n}"${n === 5 ? ' checked' : ''}><label for="rating-${n}" title="${n} ${n === 1 ? 'stea' : 'stele'}">★</label>`).join('')}
+          </div></fieldset>
+          <label for="text">Părerea ta</label><textarea id="text" name="text" rows="4" maxlength="1000"></textarea>
+          <button type="submit" class="btn">Publică recenzia</button></form></div></section>
+    ${related.length ? `<section class="related"><h2>Din aceeași categorie</h2><div class="product-grid product-grid-3">${related.map(productCard).join('')}</div></section>` : ''}
+  </div>`;
+}
+
+function viewCart() {
+  const { items, subtotal, shipping, total } = cartLines();
+  if (!items.length) return `<div class="container narrow-page"><h1>Coșul meu</h1><div class="empty-state"><h2>Coșul tău e gol</h2><p class="muted">Alege o categorie și adaugă ce-ți place.</p><a href="#categorii" class="btn">Vezi categoriile</a></div></div>`;
+  return `<div class="container narrow-page"><h1>Coșul meu</h1><div class="cart-layout"><div class="cart-items">
+    ${items.map(({ p, qty, line }) => `<article class="cart-item">
+      <a href="#p-${p.slug}" class="cart-item-img"><img src="${esc(p.image)}" alt="${esc(p.name)}"></a>
+      <div class="cart-item-info"><a href="#p-${p.slug}" class="cart-item-name">${esc(p.name)}</a><span class="muted">${lei(p.price)} / buc.</span></div>
+      <form novalidate class="qty-form" data-form="cart-qty"><input type="hidden" name="id" value="${p.id}"><label class="sr-only" for="qty-${p.id}">Cantitate</label>
+        <input type="number" id="qty-${p.id}" name="qty" value="${qty}" min="1" max="${p.stock}"><button type="submit" class="btn btn-ghost btn-small">Actualizează</button></form>
+      <span class="cart-item-total">${lei(line)}</span>
+      <button type="button" class="link-button" data-action="cart-remove" data-id="${p.id}">Scoate</button></article>`).join('')}
+    </div>
+    <aside class="summary card"><h2>Sumar</h2><dl>
+      <div><dt>Produse</dt><dd>${lei(subtotal)}</dd></div><div><dt>Livrare</dt><dd>${shipping ? lei(shipping) : 'Gratuită'}</dd></div>
+      <div class="summary-total"><dt>Total</dt><dd>${lei(total)}</dd></div></dl>
+      ${shipping ? `<p class="muted small">Mai adaugă produse de ${lei(FREE_FROM - subtotal)} și livrarea devine gratuită.</p>` : ''}
+      <a href="#comanda" class="btn btn-large btn-block">Continuă spre comandă</a><a href="#categorii" class="btn btn-ghost btn-block">Mai cumpăr</a></aside></div></div>`;
+}
+
+let checkoutState = { form: null, errors: [] };
+function viewCheckout() {
+  const { items, subtotal, shipping, total } = cartLines();
+  if (!items.length) { flash('Coșul tău e gol.', 'error'); return redirect('cos'); }
+  const c = customer(), addrs = c ? addressesOf(c.id) : [];
+  let f = checkoutState.form;
+  if (!f) {
+    const d = addrs[0];
+    f = c ? { name: c.name, email: c.email, phone: c.phone || '', address: d ? d.address : '', city: d ? d.city : '', payment: c.preferred_payment || 'card' }
+      : { name: '', email: '', phone: '', address: '', city: '', payment: 'card' };
+  }
+  const errors = checkoutState.errors;
+  checkoutState = { form: null, errors: [] };
+  return `<div class="container narrow-page"><h1>Finalizează comanda</h1>
+    ${errors.length ? `<div class="flash flash-error"><strong>Mai ai de completat:</strong><ul>${errors.map(e => `<li>${e}</li>`).join('')}</ul></div>` : ''}
+    <div class="cart-layout"><form novalidate class="checkout-form card" data-form="checkout">
+      ${c ? '' : `<p class="login-hint">Ai cont? <a href="#cont-autentificare" data-after="comanda">Intră în cont</a> și completăm noi datele. Sau comandă mai departe fără cont.</p>`}
+      <h2>Date de livrare</h2>
+      ${addrs.length > 1 ? `<div class="field"><label for="saved-address">Alege o adresă salvată</label><select id="saved-address">${addrs.map(a =>
+        `<option data-address="${esc(a.address)}" data-city="${esc(a.city)}"${a.address === f.address && a.city === f.city ? ' selected' : ''}>${esc(a.label)}: ${esc(a.address)}, ${esc(a.city)}</option>`).join('')}</select></div>` : ''}
+      <div class="field-grid">
+        <div class="field field-wide"><label for="name">Nume complet</label><input type="text" id="name" name="name" value="${esc(f.name)}" autocomplete="name"></div>
+        <div class="field"><label for="email">Email</label><input type="email" id="email" name="email" value="${esc(f.email)}" autocomplete="email"></div>
+        <div class="field"><label for="phone">Telefon</label><input type="tel" id="phone" name="phone" value="${esc(f.phone)}" autocomplete="tel"></div>
+        <div class="field field-wide"><label for="address">Adresă (stradă, număr, bloc, apartament)</label><input type="text" id="address" name="address" value="${esc(f.address)}" autocomplete="street-address"></div>
+        <div class="field"><label for="city">Oraș</label><input type="text" id="city" name="city" value="${esc(f.city)}" autocomplete="address-level2"></div>
+      </div>
+      ${c ? `<label class="check"><input type="checkbox" name="save_address" value="1"${addrs.length ? '' : ' checked'}><span>Salvează adresa în contul meu</span></label>` : ''}
+      <h2>Metodă de plată</h2><div class="pay-options">${Object.entries(PAY).map(([k, v]) =>
+        `<label class="pay-option"><input type="radio" name="payment" value="${k}"${f.payment === k ? ' checked' : ''}><span><strong>${v}</strong><span class="muted small">${PAY_HINT[k]}</span></span></label>`).join('')}</div>
+      <button type="submit" class="btn btn-large btn-block">Plasează comanda</button></form>
+    <aside class="summary card"><h2>Comanda ta</h2><ul class="summary-items">${items.map(i => `<li><span>${i.qty} × ${esc(i.p.name)}</span><span>${lei(i.line)}</span></li>`).join('')}</ul>
+      <dl><div><dt>Produse</dt><dd>${lei(subtotal)}</dd></div><div><dt>Livrare</dt><dd>${shipping ? lei(shipping) : 'Gratuită'}</dd></div>
+      <div class="summary-total"><dt>Total</dt><dd>${lei(total)}</dd></div></dl></aside></div></div>`;
+}
+
+function canSeeOrder(o) {
+  const c = customer(), s = staff();
+  return sess.myOrders.includes(o.id) || (s && s.role === 'admin') || (c && o.customer_id === c.id);
+}
+function viewPayment(id) {
+  const o = db.orders.find(x => x.id === id);
+  if (!o || !canSeeOrder(o)) return viewError(404);
+  if (o.payment_method !== 'card' || o.status !== 'asteptare_plata') return redirect(`comanda-${id}`);
+  return `<div class="container narrow-page small-page"><div class="card payment-card">
+    <p class="eyebrow">Comanda #${o.id}</p><h1>Plată cu cardul</h1><p class="price price-big">${lei(o.total)}</p>
+    <div class="sim-note"><strong>Simulare.</strong> Aici va veni formularul unui procesator de plăți (de exemplu Stripe sau Netopia). Pentru moment nu se introduc date de card și nu se plătesc bani reali. Alege ce vrei să testezi:</div>
+    <form novalidate class="payment-actions" data-form="payment"><input type="hidden" name="id" value="${o.id}">
+      <button type="submit" name="result" value="ok" class="btn btn-large">Simulează plată reușită</button>
+      <button type="submit" name="result" value="fail" class="btn btn-ghost">Simulează plată refuzată</button></form></div></div>`;
+}
+function viewOrder(id) {
+  const o = db.orders.find(x => x.id === id);
+  if (!o || !canSeeOrder(o)) return viewError(404);
+  const origin = sess.origin || {}, s = staff(), c = customer();
+  const fromAccount = origin.from === 'cont' || origin.from === 'admin';
+  let head;
+  if (fromAccount) {
+    let back = '<a href="#contul-meu" class="back-link">← Comenzile mele</a>';
+    if (origin.from === 'admin' && s && s.role === 'admin') {
+      const cid = origin.client || o.customer_id;
+      back = cid && db.customers.some(x => x.id === cid) ? `<a href="#admin-client-${cid}" class="back-link">← Fișa clientului</a>` : '<a href="#admin-comenzi" class="back-link">← Toate comenzile</a>';
+    }
+    head = `${back}<p class="eyebrow">Plasată pe ${o.created_at}</p><h1>Comanda #${o.id}</h1>`;
+  } else {
+    head = `<p class="eyebrow">Comanda #${o.id}</p><h1>Mulțumim, ${esc(firstName(o.customer_name))}!</h1>`;
+  }
+  let note = '';
+  if (o.payment_method === 'card' && o.status === 'platita') note = '<p>Plata a fost primită. Îți pregătim comanda.</p>';
+  else if (o.payment_method === 'ramburs') note = `<p>Plătești ${lei(o.total)} curierului, la livrare.</p>`;
+  else if (o.payment_method === 'transfer') note = `<p>Fă un transfer de <strong>${lei(o.total)}</strong> cu mențiunea <strong>Comanda ${o.id}</strong>. Datele contului bancar le completăm când magazinul are un cont real.</p>`;
+  let actions = '';
+  if (o.payment_method === 'card' && o.status === 'asteptare_plata') actions = `<a href="#plata-${o.id}" class="btn">Plătește acum</a>`;
+  else if (!fromAccount) actions = `<div class="done-actions"><a href="#acasa" class="btn">Înapoi în magazin</a>${c ? '<a href="#contul-meu" class="btn btn-ghost">Vezi comenzile mele</a>' : ''}</div>`;
+  return `<div class="container narrow-page small-page"><div class="card done-card">${head}
+    <p class="status-pill status-${o.status}">${STATUS[o.status]}</p>${note}
+    <h2>Ce ai comandat</h2><ul class="summary-items">${o.items.map(i => `<li><span>${i.qty} × ${esc(i.name)}</span><span>${lei(i.price * i.qty)}</span></li>`).join('')}</ul>
+    <dl class="summary"><div><dt>Livrare</dt><dd>${o.shipping ? lei(o.shipping) : 'Gratuită'}</dd></div><div class="summary-total"><dt>Total</dt><dd>${lei(o.total)}</dd></div></dl>
+    <p class="muted small">Livrare la: ${esc(o.address)}, ${esc(o.city)}. Te sunăm la ${esc(o.phone)}.</p>${actions}</div></div>`;
+}
+
+function viewPolicy() {
+  return `<div class="container narrow-page prose"><h1>Politica de confidențialitate</h1>
+    <p class="draft-note"><strong>Schiță.</strong> Textul de mai jos e un punct de plecare pentru un magazin demonstrativ. Înainte de lansarea unui magazin real, trebuie completat cu datele firmei și verificat de un specialist în protecția datelor.</p>
+    <h2>Cine suntem</h2><p>MobilaTa este operatorul datelor tale. Datele de identificare ale firmei (denumire, CUI, adresă, email de contact) se completează la lansare.</p>
+    <h2>Ce date colectăm</h2><ul><li><strong>Date de cont:</strong> nume, email, telefon, parola (salvată doar criptat) sau identificatorul contului Google.</li><li><strong>Adrese de livrare</strong> pe care alegi să le salvezi.</li><li><strong>Comenzi:</strong> produsele cumpărate, sumele, metoda de plată și statusul.</li><li><strong>Recenzii:</strong> numele afișat și textul pe care îl publici.</li></ul>
+    <p>Nu salvăm datele cardului tău. Plățile cu cardul sunt procesate de un procesator de plăți autorizat.</p>
+    <h2>De ce le folosim</h2><ul><li>Ca să livrăm comenzile și să te contactăm despre ele.</li><li>Ca să emitem documentele contabile cerute de lege.</li><li>Ca să-ți trimitem oferte pe email, doar dacă ai fost de acord.</li></ul>
+    <h2>Cookie-uri</h2><p>Folosim doar un cookie strict necesar, care ține minte coșul și dacă ești conectat. Nu folosim cookie-uri de reclamă sau de analiză.</p>
+    <h2>Drepturile tale</h2><p>Ai dreptul să îți vezi datele, să le corectezi, să le descarci, să îți retragi acordul de marketing și să ceri ștergerea contului. Toate se pot face direct din <a href="#contul-meu-confidentialitate">Contul meu → Confidențialitate</a>. Poți depune o plângere la Autoritatea Națională de Supraveghere a Prelucrării Datelor cu Caracter Personal (ANSPDCP).</p>
+    <h2>Cât timp păstrăm datele</h2><p>Datele contului, până îl ștergi. Datele din comenzi, cât cer obligațiile legale de contabilitate. Perioada exactă se completează la lansare.</p></div>`;
+}
+function viewCredits() {
+  return `<div class="container narrow-page"><h1>Credite foto</h1>
+    <p class="muted">Toate fotografiile sunt de pe <a href="https://unsplash.com" rel="noopener" target="_blank">Unsplash</a>, folosite sub licența Unsplash. Mulțumim fotografilor:</p>
+    <ul class="credits-list">${db.credits.map(([file, author]) => `<li><img src="img/${file}" alt="" loading="lazy"><span>${esc(author)}</span></li>`).join('')}</ul></div>`;
+}
+function viewError(code) {
+  const msg = code === 403 ? 'Contul tău nu are acces la această pagină.' : 'Pagina pe care o cauți nu există.';
+  return `<div class="container narrow-page small-page"><div class="empty-state"><p class="eyebrow">Eroare ${code}</p><h1>${msg}</h1><a href="#acasa" class="btn">Înapoi acasă</a></div></div>`;
+}
+
+// ---------- Conturi de clienți ----------
+let formState = {};
+function viewLogin() {
+  if (customer()) return redirect('contul-meu');
+  const st = formState.login || {}; formState.login = null;
+  return `<div class="container narrow-page small-page"><div class="card login-card">
+    <h1>Intră în cont</h1><p class="muted">Vezi comenzile tale, adresele salvate și datele contului.</p>
+    ${googleButton()}<p class="or-divider"><span>sau cu email</span></p>
+    <form novalidate data-form="login">${st.error ? `<p class="flash flash-error">${esc(st.error)}</p>` : ''}
+      <label for="email">Email</label><input type="email" id="email" name="email" value="${esc(st.email || '')}" autocomplete="email">
+      <label for="password">Parolă</label><input type="password" id="password" name="password" autocomplete="current-password">
+      <p class="muted small field-note">În demo, nu folosi o parolă pe care o ai și în altă parte.</p>
+      <button type="submit" class="btn btn-large btn-block">Intră în cont</button></form>
+    <p class="login-switch">Nu ai cont? <a href="#cont-inregistrare">Creează unul acum</a></p></div></div>`;
+}
+function viewRegister() {
+  if (customer()) return redirect('contul-meu');
+  const st = formState.register || { errors: [] }; formState.register = null;
+  return `<div class="container narrow-page small-page"><div class="card login-card">
+    <h1>Creează-ți cont</h1><p class="muted">Cu un cont urmărești comenzile și comanzi mai repede data viitoare.</p>
+    ${googleButton()}<p class="muted small center">Continuând cu Google, accepți <a href="#confidentialitate">politica de confidențialitate</a>.</p>
+    <p class="or-divider"><span>sau cu email</span></p>${errorsBox(st.errors)}
+    <form novalidate data-form="register">
+      <label for="name">Nume complet</label><input type="text" id="name" name="name" value="${esc(st.name || '')}" autocomplete="name">
+      <label for="email">Email</label><input type="email" id="email" name="email" value="${esc(st.email || '')}" autocomplete="email">
+      <label for="password">Parolă (minimum 8 caractere)</label><input type="password" id="password" name="password" autocomplete="new-password">
+      <label for="password2">Repetă parola</label><input type="password" id="password2" name="password2" autocomplete="new-password">
+      <p class="muted small field-note">În demo, nu folosi o parolă pe care o ai și în altă parte.</p>
+      <label class="check"><input type="checkbox" name="terms" value="1"${st.terms ? ' checked' : ''}><span>Accept <a href="#confidentialitate">politica de confidențialitate</a> și termenii magazinului. <em class="muted">(obligatoriu)</em></span></label>
+      <label class="check"><input type="checkbox" name="marketing" value="1"${st.marketing ? ' checked' : ''}><span>Vreau să primesc pe email oferte și noutăți. <em class="muted">(opțional, poți renunța oricând)</em></span></label>
+      <button type="submit" class="btn btn-large btn-block">Creează contul</button></form>
+    <p class="login-switch">Ai deja cont? <a href="#cont-autentificare">Intră în cont</a></p></div></div>`;
+}
+function accountLayout(active, content) {
+  const c = customer();
+  const link = (hash, key, label) => `<a href="#${hash}" class="${active === key ? 'active' : ''}">${label}</a>`;
+  return `<div class="container account-layout"><aside class="account-side">
+      <p class="account-hello"><span class="muted small">Salut,</span><strong>${esc(c.name)}</strong></p>
+      <nav class="account-nav" aria-label="Contul meu">${link('contul-meu', 'comenzi', 'Comenzile mele')}${link('contul-meu-adrese', 'adrese', 'Adrese')}${link('contul-meu-plata', 'plata', 'Plată')}${link('contul-meu-date', 'date', 'Datele mele')}${link('contul-meu-confidentialitate', 'confidentialitate', 'Confidențialitate')}</nav>
+      <button type="button" class="btn btn-ghost btn-small btn-block" data-action="customer-logout">Ieși din cont</button>
+    </aside><section class="account-main">${content}</section></div>`;
+}
+function viewAccOrders() {
+  const orders = ordersOf(customer().id);
+  const current = orders.filter(o => IN_PROGRESS.includes(o.status)), past = orders.filter(o => !IN_PROGRESS.includes(o.status));
+  return accountLayout('comenzi', `<h1>Comenzile mele</h1>
+    <section class="account-section"><h2>În curs</h2>${current.length ? orderRows(current, 'cont') : '<p class="muted">Nu ai comenzi în curs.</p>'}</section>
+    <section class="account-section"><h2>Istoric</h2>${past.length ? orderRows(past, 'cont') : '<p class="muted">Comenzile livrate sau anulate vor apărea aici.</p>'}</section>
+    ${orders.length ? '' : '<a href="#categorii" class="btn">Începe cumpărăturile</a>'}`);
+}
+function addressFields(prefix, a = {}) {
+  return `<div class="field-grid">
+    <div class="field"><label for="${prefix}-label">Nume adresă</label><input type="text" id="${prefix}-label" name="label" value="${esc(a.label || '')}" placeholder="ex. Acasă, Birou" maxlength="40"></div>
+    <div class="field"><label for="${prefix}-city">Oraș</label><input type="text" id="${prefix}-city" name="city" value="${esc(a.city || '')}"></div>
+    <div class="field field-wide"><label for="${prefix}-address">Adresă (stradă, număr, bloc, apartament)</label><input type="text" id="${prefix}-address" name="address" value="${esc(a.address || '')}"></div></div>`;
+}
+function viewAccAddresses() {
+  const addrs = addressesOf(customer().id);
+  return accountLayout('adrese', `<h1>Adrese</h1><div class="address-grid">${addrs.length ? addrs.map(a => `
+    <article class="card address-card ${a.is_default ? 'is-default' : ''}"><header><strong>${esc(a.label)}</strong>${a.is_default ? '<span class="role-pill role-admin">Principală</span>' : ''}</header>
+      <p>${esc(a.address)}<br>${esc(a.city)}</p><div class="address-actions">
+      ${a.is_default ? '' : `<form novalidate data-form="address" data-owner="me"><input type="hidden" name="action" value="default"><input type="hidden" name="address_id" value="${a.id}"><button type="submit" class="btn btn-ghost btn-small">Fă-o principală</button></form>`}
+      <form novalidate data-form="address" data-owner="me"><input type="hidden" name="action" value="delete"><input type="hidden" name="address_id" value="${a.id}"><button type="submit" class="btn btn-danger btn-small">Șterge</button></form></div></article>`).join('')
+    : '<p class="muted">Nu ai adrese salvate. Adaugă una aici sau bifează „Salvează adresa” când plasezi o comandă.</p>'}</div>
+    <form novalidate class="card address-form" data-form="address" data-owner="me"><h2>Adaugă o adresă</h2><input type="hidden" name="action" value="add">${addressFields('new')}
+      <button type="submit" class="btn">Salvează adresa</button></form>`);
+}
+function viewAccPayment() {
+  const c = customer();
+  return accountLayout('plata', `<h1>Plată</h1>
+    <form novalidate class="card account-section" data-form="acc-payment"><h2>Metoda preferată</h2><p class="muted">O alegem automat pentru tine când plasezi o comandă. O poți schimba oricând.</p>
+      <div class="pay-options">${Object.entries(PAY).map(([k, v]) => `<label class="pay-option"><input type="radio" name="preferred_payment" value="${k}"${c.preferred_payment === k ? ' checked' : ''}><span><strong>${v}</strong></span></label>`).join('')}</div>
+      <button type="submit" class="btn">Salvează</button></form>
+    <section class="card account-section"><h2>Carduri salvate</h2><div class="empty-inline"><p><strong>Nu ai carduri salvate.</strong></p>
+      <p class="muted">Când plata online va fi activă, vei putea salva un card la prima plată. Datele cardului le păstrează procesatorul de plăți, nu MobilaTa. Noi vedem doar tipul cardului și ultimele 4 cifre, de exemplu „Visa ···· 4242”.</p></div></section>`);
+}
+function viewAccProfile() {
+  const c = customer();
+  return accountLayout('date', `<h1>Datele mele</h1>
+    <form novalidate class="card account-section" data-form="acc-profile"><h2>Date personale</h2><div class="field-grid">
+      <div class="field"><label for="p-name">Nume complet</label><input type="text" id="p-name" name="name" value="${esc(c.name)}" autocomplete="name"></div>
+      <div class="field"><label for="p-phone">Telefon</label><input type="tel" id="p-phone" name="phone" value="${esc(c.phone || '')}" autocomplete="tel"></div>
+      <div class="field field-wide"><label for="p-email">Email</label><input type="email" id="p-email" value="${esc(c.email)}" disabled>
+        <p class="muted small field-note">Emailul e folosit pentru autentificare și nu se poate schimba din cont.${c.google ? ' Contul e conectat cu Google.' : ''}</p></div></div>
+      <button type="submit" class="btn">Salvează</button></form>
+    <form novalidate class="card account-section" data-form="acc-password"><h2>${c.password ? 'Schimbă parola' : 'Setează o parolă'}</h2>
+      ${c.password ? '' : '<p class="muted">Acum intri doar cu Google. Dacă setezi o parolă, vei putea intra și cu emailul.</p>'}
+      <div class="field-grid">${c.password ? '<div class="field field-wide"><label for="pw-current">Parola actuală</label><input type="password" id="pw-current" name="current" autocomplete="current-password"></div>' : ''}
+        <div class="field"><label for="pw-new">Parola nouă (minimum 8 caractere)</label><input type="password" id="pw-new" name="new1" autocomplete="new-password"></div>
+        <div class="field"><label for="pw-new2">Repetă parola nouă</label><input type="password" id="pw-new2" name="new2" autocomplete="new-password"></div></div>
+      <button type="submit" class="btn">${c.password ? 'Schimbă parola' : 'Setează parola'}</button></form>`);
+}
+function customerExport(c) {
+  return JSON.stringify({
+    exportat_la: now(),
+    cont: { nume: c.name, email: c.email, telefon: c.phone || null, conectat_cu_google: !!c.google, are_parola: !!c.password,
+      metoda_plata_preferata: PAY[c.preferred_payment] || null, accept_marketing: !!c.marketing, termeni_acceptati_la: c.terms_at, cont_creat_la: c.created_at },
+    adrese: addressesOf(c.id).map(a => ({ label: a.label, address: a.address, city: a.city, principala: !!a.is_default })),
+    comenzi: ordersOf(c.id).map(o => ({ id: o.id, data: o.created_at, status: STATUS[o.status], plata: PAY[o.payment_method], total: o.total, produse: o.items })),
+  }, null, 2);
+}
+function viewAccPrivacy() {
+  const c = customer();
+  return accountLayout('confidentialitate', `<h1>Confidențialitate și date personale</h1>
+    <p class="muted">Conform GDPR, ai control asupra datelor tale. Detalii în <a href="#confidentialitate">politica de confidențialitate</a>.</p>
+    <form novalidate class="card account-section" data-form="acc-marketing"><h2>Acordurile tale</h2>
+      <p><strong>Termeni și confidențialitate:</strong> acceptați pe ${c.terms_at}.</p>
+      <label class="check"><input type="checkbox" name="marketing" value="1"${c.marketing ? ' checked' : ''}><span>Vreau să primesc pe email oferte și noutăți de la MobilaTa.</span></label>
+      <button type="submit" class="btn">Salvează preferințele</button></form>
+    <section class="card account-section"><h2>Descarcă datele tale</h2>
+      <p class="muted">Primești toate datele pe care le avem despre tine: cont, adrese și comenzi. În demo le vezi aici și le poți copia.</p>
+      <button type="button" class="btn btn-ghost" data-action="toggle-export">Vezi datele (JSON)</button>
+      <div id="export-box" hidden><pre class="json-box" id="export-json">${esc(customerExport(c))}</pre>
+        <button type="button" class="btn btn-ghost btn-small" data-action="copy-export">Copiază</button></div></section>
+    <form novalidate class="card account-section danger-zone" data-form="acc-delete"><h2>Șterge contul</h2>
+      <p>Ștergem contul, adresele salvate și preferințele tale. <strong>Acțiunea nu se poate anula.</strong></p>
+      <p class="muted small">Comenzile deja plasate rămân în evidența magazinului, fără legătură cu vreun cont, pentru obligațiile legale de contabilitate.</p>
+      <label for="del-confirm">Scrie <strong>ȘTERGE</strong> ca să confirmi</label><input type="text" id="del-confirm" name="confirm" autocomplete="off">
+      ${c.password ? '<label for="del-password">Parola ta</label><input type="password" id="del-password" name="password" autocomplete="current-password">' : ''}
+      <button type="submit" class="btn btn-danger-solid">Șterge definitiv contul</button></form>`);
+}
+
+// ---------- Administrare ----------
+function adminLayout(active, content) {
+  const s = staff();
+  const link = (hash, key, label) => `<a href="#${hash}" class="${active === key ? 'active' : ''}">${label}</a>`;
+  return `<div class="container admin-layout"><aside class="admin-side">
+      <p class="admin-user"><strong>${esc(s.username)}</strong><span class="muted small">${ROLES[s.role]}</span></p>
+      <nav class="admin-nav">${link('admin-produse', 'produse', 'Produse')}${s.role === 'admin' ? link('admin-comenzi', 'comenzi', 'Comenzi') + link('admin-clienti', 'clienti', 'Clienți') + link('admin-utilizatori', 'utilizatori', 'Utilizatori') : ''}<a href="#acasa">Vezi magazinul</a></nav>
+      <button type="button" class="btn btn-ghost btn-small btn-block" data-action="staff-logout">Ieși din administrare</button>
+    </aside><section class="admin-main">${content}</section></div>`;
+}
+function viewAdminLogin() {
+  if (staff()) return redirect('admin-produse');
+  const st = formState.admin || {}; formState.admin = null;
+  return `<div class="container narrow-page small-page"><form novalidate class="card login-card" data-form="admin-login">
+    <p class="eyebrow">Acces echipă</p><h1>Administrare MobilaTa</h1>
+    <p class="muted">Doar pentru echipă: gestionezi produsele, comenzile și utilizatorii. Clienții intră din butonul „Cont” de sus.</p>
+    <p class="demo-hint">În demo: utilizator <strong>admin</strong>, parola <strong>admin</strong>.</p>
+    ${st.error ? `<p class="flash flash-error">${esc(st.error)}</p>` : ''}
+    <label for="username">Utilizator</label><input type="text" id="username" name="username" autocomplete="username">
+    <label for="password">Parolă</label><input type="password" id="password" name="password" autocomplete="current-password">
+    <button type="submit" class="btn btn-large btn-block">Intră</button></form></div>`;
+}
+function viewAdminProducts() {
+  const order = Object.fromEntries(db.categories.map((c, i) => [c.slug, i]));
+  const list = db.products.slice().sort((a, b) => order[a.cat] - order[b.cat] || a.name.localeCompare(b.name, 'ro'));
+  return adminLayout('produse', `<div class="admin-head"><h1>Produse <span class="muted">(${list.length})</span></h1><a href="#admin-produs-nou" class="btn">+ Adaugă produs</a></div>
+    <div class="table-wrap"><table class="admin-table"><thead><tr><th></th><th>Produs</th><th>Categorie</th><th class="num">Preț</th><th class="num">Stoc</th><th></th></tr></thead><tbody>
+    ${list.length ? list.map(p => `<tr><td><img src="${esc(p.image)}" alt="" class="thumb"></td><td><a href="#p-${p.slug}">${esc(p.name)}</a></td><td>${esc(cat(p.cat).name)}</td>
+      <td class="num">${lei(p.price)}</td><td class="num ${p.stock === 0 ? 'stock-out' : p.stock <= 3 ? 'stock-low' : ''}">${p.stock}</td>
+      <td class="row-actions"><a href="#admin-produs-${p.id}" class="btn btn-ghost btn-small">Editează</a>
+        <button type="button" class="btn btn-danger btn-small" data-action="product-delete" data-id="${p.id}" data-confirm="Sigur? Apasă din nou">Scoate</button></td></tr>`).join('')
+      : '<tr><td colspan="6" class="muted">Nu există produse. Adaugă primul produs.</td></tr>'}</tbody></table></div>`);
+}
+function viewProductForm(id) {
+  const existing = id ? product(id) : null;
+  if (id && !existing) return viewError(404);
+  const st = formState.product; formState.product = null;
+  const d = st ? st.data : (existing ? { ...existing } : { cat: db.categories[0].slug });
+  const errors = st ? st.errors : [];
+  const f = (key, label, extra = '') => `<div class="field ${extra}"><label for="f-${key}">${label}</label><input type="text" id="f-${key}" name="${key}" value="${esc(d[key] ?? '')}"></div>`;
+  return adminLayout('produse', `<div class="admin-head"><h1>${existing ? 'Editează produsul' : 'Produs nou'}</h1><a href="#admin-produse" class="btn btn-ghost">Înapoi la listă</a></div>
+    ${errorsBox(errors)}
+    <form novalidate class="card product-form" data-form="product"><input type="hidden" name="id" value="${existing ? existing.id : ''}">
+      <input type="hidden" name="image" id="f-image-data" value="${esc(d.image || '')}"><div class="field-grid">
+      ${f('name', 'Nume produs', 'field-wide')}
+      <div class="field"><label for="f-cat">Categorie</label><select id="f-cat" name="cat">${db.categories.map(c => `<option value="${c.slug}"${c.slug === d.cat ? ' selected' : ''}>${esc(c.name)}</option>`).join('')}</select></div>
+      <div class="field"><label for="f-price">Preț (lei)</label><input type="number" id="f-price" name="price" value="${esc(d.price ?? '')}" min="1" step="1"></div>
+      <div class="field"><label for="f-stock">Stoc (bucăți)</label><input type="number" id="f-stock" name="stock" value="${esc(d.stock ?? '')}" min="0" step="1"></div>
+      ${f('color', 'Culoare')}${f('material', 'Material')}${f('dimensions', 'Dimensiuni')}
+      ${f('short_desc', 'Descriere scurtă (apare pe cardul produsului)', 'field-wide')}
+      <div class="field field-wide"><label for="f-description">Descriere completă</label><textarea id="f-description" name="description" rows="5">${esc(d.description || '')}</textarea></div>
+      <div class="field field-wide image-field"><img src="${esc(d.image || '')}" alt="Poza produsului" class="thumb-large" id="f-image-preview"${d.image ? '' : ' hidden'}>
+        <div><label for="f-image">${d.image ? 'Schimbă poza' : 'Poză produs'}</label><input type="file" id="f-image" accept=".jpg,.jpeg,.png,.webp">
+        <p class="muted small">JPG, PNG sau WEBP. În demo, poza rămâne doar în acest browser.</p></div></div>
+    </div><button type="submit" class="btn btn-large">${existing ? 'Salvează modificările' : 'Adaugă produsul'}</button></form>`);
+}
+function viewAdminOrders() {
+  const list = db.orders.slice().sort((a, b) => b.id - a.id);
+  return adminLayout('comenzi', `<div class="admin-head"><h1>Comenzi <span class="muted">(${list.length})</span></h1></div>
+    <div class="table-wrap"><table class="admin-table"><thead><tr><th>#</th><th>Data</th><th>Client</th><th>Plată</th><th class="num">Produse</th><th class="num">Total</th><th>Status</th></tr></thead><tbody>
+    ${list.length ? list.map(o => `<tr><td><a href="#comanda-${o.id}" data-origin="admin">${o.id}</a></td><td>${o.created_at}</td>
+      <td>${o.customer_id ? `<a href="#admin-client-${o.customer_id}">${esc(o.customer_name)}</a>` : `${esc(o.customer_name)} <span class="muted small">(fără cont)</span>`}<br><span class="muted small">${esc(o.email)} · ${esc(o.phone)}</span></td>
+      <td>${PAY[o.payment_method]}</td><td class="num">${o.items.reduce((a, i) => a + i.qty, 0)}</td><td class="num">${lei(o.total)}</td>
+      <td><label class="sr-only" for="status-${o.id}">Status comanda ${o.id}</label><select id="status-${o.id}" data-status="${o.id}">${Object.entries(STATUS).map(([k, v]) => `<option value="${k}"${k === o.status ? ' selected' : ''}>${v}</option>`).join('')}</select></td></tr>`).join('')
+      : '<tr><td colspan="7" class="muted">Încă nu există comenzi.</td></tr>'}</tbody></table></div>`);
+}
+function viewAdminCustomers() {
+  const q = sess.clientQuery.toLowerCase();
+  const list = db.customers.filter(c => !q || [c.name, c.email, c.phone || ''].some(v => v.toLowerCase().includes(q))).sort((a, b) => b.id - a.id);
+  return adminLayout('clienti', `<div class="admin-head"><h1>Clienți <span class="muted">(${list.length})</span></h1>
+    <form novalidate class="search-form" role="search" data-form="client-search"><label class="sr-only" for="q">Caută client</label>
+      <input type="search" id="q" name="q" value="${esc(sess.clientQuery)}" placeholder="Caută după nume, email sau telefon"><button type="submit" class="btn btn-ghost">Caută</button>
+      ${q ? '<button type="button" class="link-button" data-action="clear-search">Toți clienții</button>' : ''}</form></div>
+    <div class="table-wrap"><table class="admin-table"><thead><tr><th>Client</th><th>Telefon</th><th>Intră cu</th><th class="num">Comenzi</th><th class="num">Total cumpărat</th><th>Cont creat</th></tr></thead><tbody>
+    ${list.length ? list.map(c => { const os = ordersOf(c.id); return `<tr><td><a href="#admin-client-${c.id}">${esc(c.name)}</a><br><span class="muted small">${esc(c.email)}</span></td>
+      <td>${esc(c.phone || '–')}</td><td>${c.password ? '<span class="role-pill">Parolă</span> ' : ''}${c.google ? '<span class="role-pill role-admin">Google</span>' : ''}</td>
+      <td class="num">${os.length}</td><td class="num">${lei(os.reduce((a, o) => a + o.total, 0))}</td><td>${c.created_at}</td></tr>`; }).join('')
+      : `<tr><td colspan="6" class="muted">${q ? 'Niciun client nu se potrivește căutării.' : 'Încă nu există clienți cu cont. Creează unul din butonul „Cont” de sus.'}</td></tr>`}</tbody></table></div>`);
+}
+function viewAdminCustomer(id) {
+  const c = db.customers.find(x => x.id === id);
+  if (!c) return viewError(404);
+  const addrs = addressesOf(id), orders = ordersOf(id), log = db.logs.filter(l => l.customer_id === id).sort((a, b) => b.id - a.id).slice(0, 30);
+  const addrForm = (action, a, inner) => `<form novalidate data-form="address" data-owner="${id}"><input type="hidden" name="action" value="${action}"><input type="hidden" name="address_id" value="${a ? a.id : ''}">${inner}</form>`;
+  return adminLayout('clienti', `<a href="#admin-clienti" class="back-link">← Toți clienții</a>
+    <div class="admin-head"><h1>${esc(c.name)}</h1><div class="pill-row">${c.password ? '<span class="role-pill">Intră cu parolă</span>' : ''}${c.google ? '<span class="role-pill role-admin">Conectat cu Google</span>' : ''}<span class="muted small">Client din ${c.created_at}</span></div></div>
+    <div class="customer-grid"><div class="customer-col">
+      <form novalidate class="card account-section" data-form="client-profile" data-id="${id}"><h2>Date de contact</h2><div class="field-grid">
+        <div class="field"><label for="c-name">Nume</label><input type="text" id="c-name" name="name" value="${esc(c.name)}"></div>
+        <div class="field"><label for="c-phone">Telefon</label><input type="tel" id="c-phone" name="phone" value="${esc(c.phone || '')}"></div>
+        <div class="field field-wide"><label for="c-email">Email</label><input type="email" id="c-email" name="email" value="${esc(c.email)}"><p class="muted small field-note">Schimbă emailul doar la cererea clientului. Cu el intră în cont.</p></div>
+        <div class="field field-wide"><label for="c-pay">Metoda de plată preferată</label><select id="c-pay" name="preferred_payment"><option value="">Nealeasă</option>${Object.entries(PAY).map(([k, v]) => `<option value="${k}"${c.preferred_payment === k ? ' selected' : ''}>${v}</option>`).join('')}</select></div></div>
+        <button type="submit" class="btn">Salvează datele</button></form>
+      <section class="card account-section" id="adrese"><h2>Adrese</h2>
+        ${addrs.length ? addrs.map(a => `<details class="address-edit"><summary><span><strong>${esc(a.label)}</strong>${a.is_default ? ' <span class="role-pill role-admin">Principală</span>' : ''}<br><span class="muted">${esc(a.address)}, ${esc(a.city)}</span></span><span class="link-like">Modifică</span></summary>
+          ${addrForm('edit', a, `<div class="address-edit-form">${addressFields('a' + a.id, a)}<button type="submit" class="btn btn-small">Salvează adresa</button></div>`)}
+          <div class="address-actions">${a.is_default ? '' : addrForm('default', a, '<button type="submit" class="btn btn-ghost btn-small">Fă-o principală</button>')}
+            ${addrForm('delete', a, '<button type="submit" class="btn btn-danger btn-small" data-confirm="Sigur? Apasă din nou">Șterge adresa</button>')}</div></details>`).join('')
+          : '<p class="muted">Clientul nu are adrese salvate.</p>'}
+        <details class="address-edit address-new"><summary><span><strong>+ Adaugă o adresă</strong></span></summary>
+          ${addrForm('add', null, `<div class="address-edit-form">${addressFields('anew')}<button type="submit" class="btn btn-small">Adaugă adresa</button></div>`)}</details></section>
+      <section class="account-section"><h2>Comenzi (${orders.length})</h2>${orders.length ? orderRows(orders, 'admin', id) : '<p class="muted">Clientul nu are comenzi.</p>'}</section>
+    </div><div class="customer-col">
+      <form novalidate class="card account-section" data-form="client-password" data-id="${id}"><h2>Parolă temporară</h2>
+        <p class="muted small">Parola clientului nu se poate vedea. Dacă a uitat-o, setează una temporară, spune-i-o pe telefon și roagă-l să o schimbe din „Datele mele”.</p>
+        <label for="c-newpw">Parolă nouă (minimum 8 caractere)</label><input type="text" id="c-newpw" name="password" autocomplete="off">
+        <button type="submit" class="btn btn-ghost btn-block">Setează parola temporară</button></form>
+      <section class="card account-section" id="gdpr"><h2>Acorduri și GDPR</h2>
+        <p class="small"><strong>Termeni acceptați:</strong> ${c.terms_at}</p><p class="small"><strong>Emailuri de marketing:</strong> ${c.marketing ? 'Da' : 'Nu'}</p>
+        ${c.marketing ? `<button type="button" class="btn btn-ghost btn-small" data-action="client-marketing" data-id="${id}">Retrage acordul (la cererea clientului)</button>` : ''}
+        <p class="muted small">Acordul de marketing îl poate da doar clientul, din contul lui.</p>
+        <form novalidate class="danger-inline" data-form="client-delete" data-id="${id}"><h3>Șterge contul</h3><p class="muted small">Doar la cererea clientului. Comenzile rămân în evidență, fără legătură cu contul.</p>
+          <label for="c-confirm">Scrie emailul clientului ca să confirmi</label><input type="text" id="c-confirm" name="email" autocomplete="off">
+          <button type="submit" class="btn btn-danger-solid btn-block">Șterge contul</button></form></section>
+      <section class="card account-section"><h2>Istoric modificări</h2>${log.length ? `<ul class="log-list">${log.map(l => `<li><span>${esc(l.action)}</span><span class="muted small">${esc(l.staff)} · ${l.created_at}</span></li>`).join('')}</ul>` : '<p class="muted small">Echipa nu a modificat încă nimic la acest client.</p>'}</section>
+    </div></div>`);
+}
+function viewAdminUsers() {
+  const s = staff();
+  return adminLayout('utilizatori', `<div class="admin-head"><h1>Utilizatori</h1></div><div class="admin-split">
+    <div class="table-wrap"><table class="admin-table"><thead><tr><th>Utilizator</th><th>Rol</th><th>Creat</th><th></th></tr></thead><tbody>
+    ${db.users.map(u => `<tr><td>${esc(u.username)}${u.id === s.id ? ' <span class="muted small">(tu)</span>' : ''}</td><td><span class="role-pill role-${u.role}">${ROLES[u.role]}</span></td><td>${u.created_at}</td>
+      <td class="row-actions">${u.id === s.id ? '' : `<button type="button" class="btn btn-danger btn-small" data-action="user-delete" data-id="${u.id}" data-confirm="Sigur? Apasă din nou">Șterge</button>`}</td></tr>`).join('')}</tbody></table></div>
+    <form novalidate class="card user-form" data-form="user-new"><h2>Cont nou</h2>
+      <label for="u-name">Utilizator</label><input type="text" id="u-name" name="username">
+      <label for="u-pass">Parolă</label><input type="password" id="u-pass" name="password" autocomplete="new-password">
+      <label for="u-role">Rol</label><select id="u-role" name="role"><option value="manager">Gestionar produse (doar produse)</option><option value="admin">Administrator (acces total)</option></select>
+      <button type="submit" class="btn btn-block">Creează contul</button></form></div>`);
+}
+
+// ---------- Rutare ----------
+let pendingRedirect = null;
+function redirect(hash) { pendingRedirect = hash; return null; }
+function needCustomer(view) {
+  if (customer()) return view();
+  sess.afterLogin = location.hash.slice(1);
+  return redirect('cont-autentificare');
+}
+function needStaff(roles, view) {
+  const s = staff();
+  if (!s) { sess.staff = null; sess.afterStaff = location.hash.slice(1); return redirect('admin-autentificare'); }
+  if (!roles.includes(s.role)) return viewError(403);
+  return view();
+}
+const ROUTES = [
+  [/^(acasa|categorii)?$/, () => viewHome()],
+  [/^c-(.+)$/, m => viewCategory(m[1])],
+  [/^p-(.+)$/, m => viewProduct(m[1])],
+  [/^cos$/, () => viewCart()],
+  [/^comanda$/, () => viewCheckout()],
+  [/^plata-(\d+)$/, m => viewPayment(+m[1])],
+  [/^comanda-(\d+)$/, m => viewOrder(+m[1])],
+  [/^confidentialitate$/, () => viewPolicy()],
+  [/^credite$/, () => viewCredits()],
+  [/^cont-autentificare$/, () => viewLogin()],
+  [/^cont-inregistrare$/, () => viewRegister()],
+  [/^contul-meu$/, () => needCustomer(viewAccOrders)],
+  [/^contul-meu-adrese$/, () => needCustomer(viewAccAddresses)],
+  [/^contul-meu-plata$/, () => needCustomer(viewAccPayment)],
+  [/^contul-meu-date$/, () => needCustomer(viewAccProfile)],
+  [/^contul-meu-confidentialitate$/, () => needCustomer(viewAccPrivacy)],
+  [/^admin-autentificare$/, () => viewAdminLogin()],
+  [/^admin(-produse)?$/, () => needStaff(['admin', 'manager'], viewAdminProducts)],
+  [/^admin-produs-nou$/, () => needStaff(['admin', 'manager'], () => viewProductForm(null))],
+  [/^admin-produs-(\d+)$/, m => needStaff(['admin', 'manager'], () => viewProductForm(+m[1]))],
+  [/^admin-comenzi$/, () => needStaff(['admin'], viewAdminOrders)],
+  [/^admin-clienti$/, () => needStaff(['admin'], viewAdminCustomers)],
+  [/^admin-client-(\d+)$/, m => needStaff(['admin'], () => viewAdminCustomer(+m[1]))],
+  [/^admin-utilizatori$/, () => needStaff(['admin'], viewAdminUsers)],
+];
+let scrollTarget = null;
+function route() {
+  const h = decodeURIComponent(location.hash.slice(1));
+  let html = null;
+  for (const [re, view] of ROUTES) { const m = h.match(re); if (m) { html = view(m); break; } }
+  if (html === null && pendingRedirect === null) html = viewError(404);
+  if (pendingRedirect !== null) { const to = pendingRedirect; pendingRedirect = null; save(); location.replace('#' + to); return; }
+  const flashes = sess.flash.splice(0);
+  app.innerHTML = (flashes.length ? `<div class="container flash-stack">${flashes.map(([k, m]) => `<p class="flash flash-${k}">${esc(m)}</p>`).join('')}</div>` : '') + html;
+  save(); renderHeader();
+  const target = scrollTarget || (h === 'categorii' ? 'categorii' : null);
+  scrollTarget = null;
+  if (target && document.getElementById(target)) document.getElementById(target).scrollIntoView();
+  else window.scrollTo(0, 0);
+}
+function renderHeader() {
+  const h = location.hash.slice(1);
+  const activeCat = h.startsWith('c-') ? h.slice(2) : (h.startsWith('p-') ? (db.products.find(p => p.slug === h.slice(2)) || {}).cat : '');
+  document.querySelectorAll('#nav-links a').forEach(a => a.classList.toggle('active', a.dataset.cat === activeCat));
+  const c = customer(), s = staff();
+  const n = Object.values(sess.cart).reduce((a, b) => a + b, 0);
+  document.getElementById('actions').innerHTML =
+    (s ? `<a href="#admin" class="icon-link staff-link" title="Administrare"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg><span class="icon-label">Admin</span></a>` : '') +
+    `<a href="#${c ? 'contul-meu' : 'cont-autentificare'}" class="icon-link" title="Contul meu"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-7 8-7s8 3 8 7"/></svg><span class="icon-label">${c ? esc(firstName(c.name)) : 'Cont'}</span></a>` +
+    `<a href="#cos" class="icon-link cart-link" title="Coșul de cumpărături"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 4h2l2.4 11.2a2 2 0 0 0 2 1.6h7.7a2 2 0 0 0 2-1.5L21 8H6.2"/><circle cx="10" cy="20.5" r="1.3"/><circle cx="17" cy="20.5" r="1.3"/></svg><span class="icon-label">Coș</span>${n ? `<span class="cart-badge">${n}</span>` : ''}</a>`;
+  if (typeof fitNav === 'function') fitNav();
+}
+
+// ---------- Acțiuni ----------
+function logChange(customerId, action) {
+  db.logs.push({ id: nextId('log'), customer_id: customerId, staff: staff().username, action, created_at: now() });
+}
+function deleteCustomer(id) {
+  db.orders.forEach(o => { if (o.customer_id === id) o.customer_id = null; });
+  db.addresses = db.addresses.filter(a => a.customer_id !== id);
+  db.logs = db.logs.filter(l => l.customer_id !== id);
+  db.customers = db.customers.filter(c => c.id !== id);
+  if (sess.customerId === id) sess.customerId = null;
+}
+function afterLogin(fallback) { const to = sess.afterLogin || fallback; sess.afterLogin = null; return to; }
+function handleAddress(customerId, fd, allowEdit) {
+  const action = fd.action, addrId = +fd.address_id;
+  const owned = db.addresses.find(a => a.id === addrId && a.customer_id === customerId);
+  const label = (fd.label || '').trim().slice(0, 40) || 'Adresă', address = (fd.address || '').trim(), city = (fd.city || '').trim();
+  if ((action === 'add' || action === 'edit') && (!address || !city)) { flash('Completează adresa și orașul.', 'error'); return null; }
+  if (action === 'add') {
+    const hasAny = db.addresses.some(a => a.customer_id === customerId);
+    db.addresses.push({ id: nextId('address'), customer_id: customerId, label, address, city, is_default: hasAny ? 0 : 1 });
+    flash('Adresa a fost salvată.'); return `A adăugat adresa „${label}”`;
+  }
+  if (action === 'edit' && allowEdit && owned) { Object.assign(owned, { label, address, city }); flash('Adresa a fost modificată.'); return `A modificat adresa „${label}”`; }
+  if (action === 'default' && owned) { db.addresses.forEach(a => { if (a.customer_id === customerId) a.is_default = a.id === addrId ? 1 : 0; }); flash('Am schimbat adresa principală.'); return 'A schimbat adresa principală'; }
+  if (action === 'delete' && owned) {
+    db.addresses = db.addresses.filter(a => a.id !== addrId);
+    const rest = db.addresses.filter(a => a.customer_id === customerId);
+    if (rest.length && !rest.some(a => a.is_default)) rest.sort((a, b) => a.id - b.id)[0].is_default = 1;
+    flash('Adresa a fost ștearsă.'); return 'A șters o adresă';
+  }
+  return null;
+}
+
+const FORMS = {
+  add(fd) { addToCart(+fd.id, Math.max(1, +fd.qty || 1)); },
+  review(fd) {
+    const p = product(+fd.id), author = (fd.author || '').trim().slice(0, 60), text = (fd.text || '').trim().slice(0, 1000), rating = +fd.rating;
+    if (!author || text.length < 3 || !(rating >= 1 && rating <= 5)) flash('Completează numele, nota și un mesaj de cel puțin 3 caractere.', 'error');
+    else { p.reviews.push({ author, rating, text }); flash('Mulțumim! Recenzia ta a fost publicată.'); }
+    scrollTarget = 'recenzii'; route();
+  },
+  'cart-qty'(fd) { const p = product(+fd.id), q = Math.min(+fd.qty || 0, p ? p.stock : 0); if (q > 0) sess.cart[fd.id] = q; else delete sess.cart[fd.id]; route(); },
+  checkout(fd) {
+    const { items, subtotal, shipping, total } = cartLines(), c = customer(), errors = [];
+    const f = { name: (fd.name || '').trim(), email: (fd.email || '').trim(), phone: (fd.phone || '').trim(), address: (fd.address || '').trim(), city: (fd.city || '').trim(), payment: fd.payment };
+    if (!f.name) errors.push('Scrie numele complet.');
+    if (!EMAIL_RE.test(f.email)) errors.push('Scrie o adresă de email validă.');
+    if (f.phone.replace(/\D/g, '').length < 10) errors.push('Scrie un număr de telefon de cel puțin 10 cifre.');
+    if (!f.address || !f.city) errors.push('Completează adresa și orașul.');
+    if (!PAY[f.payment]) errors.push('Alege o metodă de plată.');
+    if (errors.length) { checkoutState = { form: f, errors }; route(); return; }
+    const id = nextId('order');
+    db.orders.push({ id, created_at: now(), customer_name: f.name, email: f.email, phone: f.phone, address: f.address, city: f.city,
+      payment_method: f.payment, status: f.payment === 'ramburs' ? 'confirmata' : 'asteptare_plata', subtotal, shipping, total,
+      customer_id: c ? c.id : null, items: items.map(i => ({ name: i.p.name, price: i.p.price, qty: i.qty })) });
+    items.forEach(i => { i.p.stock -= i.qty; });
+    if (c && fd.save_address && !db.addresses.some(a => a.customer_id === c.id && a.address === f.address && a.city === f.city)) {
+      db.addresses.push({ id: nextId('address'), customer_id: c.id, label: 'Adresă de livrare', address: f.address, city: f.city, is_default: addressesOf(c.id).length ? 0 : 1 });
+    }
+    sess.cart = {}; sess.myOrders.push(id); sess.origin = null;
+    go(f.payment === 'card' ? `plata-${id}` : `comanda-${id}`);
+  },
+  payment(fd, submitter) {
+    const o = db.orders.find(x => x.id === +fd.id);
+    if (submitter && submitter.value === 'ok') { o.status = 'platita'; go(`comanda-${o.id}`); }
+    else { flash('Plata nu a trecut (simulare). Poți încerca din nou.', 'error'); route(); }
+  },
+  register(fd) {
+    const name = (fd.name || '').trim(), email = (fd.email || '').trim().toLowerCase(), errors = [];
+    if (!name) errors.push('Scrie-ți numele.');
+    if (!EMAIL_RE.test(email)) errors.push('Scrie o adresă de email validă.');
+    if ((fd.password || '').length < 8) errors.push('Parola trebuie să aibă cel puțin 8 caractere.');
+    else if (fd.password !== fd.password2) errors.push('Cele două parole nu sunt identice.');
+    if (!fd.terms) errors.push('Ca să-ți faci cont, trebuie să accepți termenii și politica de confidențialitate.');
+    if (!errors.length && db.customers.some(c => c.email === email)) errors.push('Există deja un cont cu acest email. Intră în cont sau folosește Google.');
+    if (errors.length) { formState.register = { errors, name, email: fd.email, terms: fd.terms, marketing: fd.marketing }; route(); return; }
+    const id = nextId('customer'), t = now();
+    db.customers.push({ id, email, name, password: fd.password, google: false, phone: '', preferred_payment: null, marketing: !!fd.marketing, terms_at: t, created_at: t });
+    sess.customerId = id; flash(`Bine ai venit, ${firstName(name)}! Contul tău a fost creat.`);
+    go(afterLogin('contul-meu'));
+  },
+  login(fd) {
+    const email = (fd.email || '').trim().toLowerCase(), c = db.customers.find(x => x.email === email);
+    let error = null;
+    if (c && !c.password) error = 'Acest cont folosește autentificarea cu Google. Apasă „Continuă cu Google”.';
+    else if (!c || c.password !== fd.password) error = 'Email sau parolă greșită.';
+    if (error) { formState.login = { error, email }; route(); return; }
+    sess.customerId = c.id; go(afterLogin('contul-meu'));
+  },
+  'address'(fd, submitter, form) {
+    const owner = form.dataset.owner;
+    if (owner === 'me') { handleAddress(customer().id, fd, false); route(); return; }
+    const cid = +owner, change = handleAddress(cid, fd, true);
+    if (change) logChange(cid, change);
+    scrollTarget = 'adrese'; route();
+  },
+  'acc-payment'(fd) { if (PAY[fd.preferred_payment]) { customer().preferred_payment = fd.preferred_payment; flash(`Metoda preferată e acum: ${PAY[fd.preferred_payment]}.`); } route(); },
+  'acc-profile'(fd) {
+    const name = (fd.name || '').trim();
+    if (!name) flash('Numele nu poate rămâne gol.', 'error'); else { Object.assign(customer(), { name, phone: (fd.phone || '').trim() }); flash('Datele tale au fost salvate.'); }
+    route();
+  },
+  'acc-password'(fd) {
+    const c = customer();
+    if (c.password && fd.current !== c.password) flash('Parola actuală nu e corectă.', 'error');
+    else if ((fd.new1 || '').length < 8) flash('Parola nouă trebuie să aibă cel puțin 8 caractere.', 'error');
+    else if (fd.new1 !== fd.new2) flash('Cele două parole noi nu sunt identice.', 'error');
+    else { c.password = fd.new1; flash('Parola a fost schimbată.'); }
+    route();
+  },
+  'acc-marketing'(fd) { customer().marketing = !!fd.marketing; flash(fd.marketing ? 'Am salvat preferințele tale.' : 'Nu îți mai trimitem emailuri de marketing.'); route(); },
+  'acc-delete'(fd) {
+    const c = customer(), word = (fd.confirm || '').trim().toUpperCase().replace('Ș', 'S');
+    if (word !== 'STERGE') { flash('Ca să-ți ștergi contul, scrie cuvântul ȘTERGE în căsuță.', 'error'); route(); return; }
+    if (c.password && fd.password !== c.password) { flash('Parola nu e corectă, contul nu a fost șters.', 'error'); route(); return; }
+    deleteCustomer(c.id); flash('Contul tău și datele din el au fost șterse.'); go('acasa');
+  },
+  'admin-login'(fd) {
+    const u = db.users.find(x => x.username === (fd.username || '').trim());
+    if (!u || u.password !== fd.password) { formState.admin = { error: 'Utilizator sau parolă greșită.' }; route(); return; }
+    sess.staff = { id: u.id, username: u.username, role: u.role }; const to = sess.afterStaff || 'admin-produse'; sess.afterStaff = null; go(to);
+  },
+  product(fd) {
+    const existing = fd.id ? product(+fd.id) : null, errors = [];
+    const data = { name: (fd.name || '').trim(), cat: fd.cat, color: (fd.color || '').trim(), material: (fd.material || '').trim(), dimensions: (fd.dimensions || '').trim(),
+      short_desc: (fd.short_desc || '').trim().slice(0, 140), description: (fd.description || '').trim(), image: fd.image, price: fd.price, stock: fd.stock };
+    const price = Number(fd.price), stock = Number(fd.stock);
+    if (!Number.isInteger(price) || price <= 0) errors.push('Prețul trebuie să fie un număr întreg mai mare ca 0.');
+    if (fd.stock === '' || !Number.isInteger(stock) || stock < 0) errors.push('Stocul trebuie să fie un număr întreg, 0 sau mai mare.');
+    if (!data.name) errors.push('Produsul are nevoie de un nume.');
+    if (!cat(data.cat)) errors.push('Alege o categorie.');
+    if (errors.length) { formState.product = { data, errors }; route(); return; }
+    let slug = slugify(data.name), n = 2;
+    while (db.products.some(p => p.slug === slug && p !== existing)) slug = `${slugify(data.name)}-${n++}`;
+    const values = { ...data, price, stock, slug, image: data.image || 'img/hero.jpg' };
+    if (existing) { Object.assign(existing, values); flash(`Am salvat modificările la „${data.name}”.`); }
+    else { db.products.push({ id: nextId('product'), reviews: [], created_at: now(), ...values }); flash(`Am adăugat produsul „${data.name}”.`); }
+    go('admin-produse');
+  },
+  'client-search'(fd) { sess.clientQuery = (fd.q || '').trim(); route(); },
+  'client-profile'(fd, s, form) {
+    const id = +form.dataset.id, c = db.customers.find(x => x.id === id);
+    const name = (fd.name || '').trim(), email = (fd.email || '').trim().toLowerCase(), phone = (fd.phone || '').trim(), pay = fd.preferred_payment || null;
+    if (!name || !EMAIL_RE.test(email)) flash('Numele și un email valid sunt obligatorii.', 'error');
+    else if (db.customers.some(x => x.email === email && x.id !== id)) flash('Există deja alt client cu acest email.', 'error');
+    else {
+      const changed = [['name', 'nume', name], ['email', 'email', email], ['phone', 'telefon', phone], ['preferred_payment', 'metoda de plată', pay]]
+        .filter(([k, , v]) => (c[k] || '') !== (v || '')).map(([, label]) => label);
+      if (changed.length) { Object.assign(c, { name, email, phone, preferred_payment: pay }); logChange(id, 'A modificat: ' + changed.join(', ')); flash('Datele clientului au fost salvate.'); }
+      else flash('Nu era nimic de schimbat.');
+    }
+    route();
+  },
+  'client-password'(fd, s, form) {
+    const id = +form.dataset.id;
+    if ((fd.password || '').length < 8) flash('Parola temporară trebuie să aibă cel puțin 8 caractere.', 'error');
+    else { db.customers.find(x => x.id === id).password = fd.password; logChange(id, 'A setat o parolă temporară'); flash('Parola temporară a fost setată. Spune-i clientului să o schimbe din contul lui.'); }
+    route();
+  },
+  'client-delete'(fd, s, form) {
+    const id = +form.dataset.id, c = db.customers.find(x => x.id === id);
+    if ((fd.email || '').trim().toLowerCase() !== c.email) { flash('Emailul de confirmare nu se potrivește. Contul nu a fost șters.', 'error'); scrollTarget = 'gdpr'; route(); return; }
+    deleteCustomer(id); flash(`Contul clientului ${c.name} a fost șters.`); go('admin-clienti');
+  },
+  'user-new'(fd) {
+    const username = (fd.username || '').trim();
+    if (!username || (fd.password || '').length < 4 || !ROLES[fd.role]) flash('Completează utilizatorul, o parolă de minim 4 caractere și rolul.', 'error');
+    else if (db.users.some(u => u.username === username)) flash(`Există deja un cont cu numele „${username}”.`, 'error');
+    else { db.users.push({ id: nextId('user'), username, password: fd.password, role: fd.role, created_at: now() }); flash(`Am creat contul „${username}” (${ROLES[fd.role]}).`); }
+    route();
+  },
+};
+
+const ACTIONS = {
+  google() {
+    let c = db.customers.find(x => x.email === 'client.google@gmail.com');
+    if (!c) {
+      const t = now();
+      c = { id: nextId('customer'), email: 'client.google@gmail.com', name: 'Client Google', password: null, google: true, phone: '', preferred_payment: null, marketing: false, terms_at: t, created_at: t };
+      db.customers.push(c); flash('În demo, te-am conectat cu un cont Google de probă.');
+    }
+    sess.customerId = c.id; go(afterLogin('contul-meu'));
+  },
+  'customer-logout'() { sess.customerId = null; flash('Ai ieșit din cont.'); go('acasa'); },
+  'staff-logout'() { sess.staff = null; go('acasa'); },
+  'cart-remove'(el) { delete sess.cart[el.dataset.id]; route(); },
+  'product-delete'(el) {
+    const p = product(+el.dataset.id);
+    db.products = db.products.filter(x => x !== p); delete sess.cart[p.id];
+    flash(`Am scos produsul „${p.name}”.`); route();
+  },
+  'user-delete'(el) {
+    const u = db.users.find(x => x.id === +el.dataset.id);
+    db.users = db.users.filter(x => x !== u); flash(`Am șters contul „${u.username}”.`); route();
+  },
+  'client-marketing'(el) {
+    const id = +el.dataset.id; db.customers.find(x => x.id === id).marketing = false;
+    logChange(id, 'A retras acordul de marketing, la cererea clientului'); flash('Clientul nu mai primește emailuri de marketing.');
+    scrollTarget = 'gdpr'; route();
+  },
+  'clear-search'() { sess.clientQuery = ''; route(); },
+  'toggle-export'() { const b = document.getElementById('export-box'); b.hidden = !b.hidden; },
+  'copy-export'(el) {
+    const text = document.getElementById('export-json').textContent;
+    navigator.clipboard.writeText(text).then(() => { el.textContent = 'Copiat'; }).catch(() => {
+      const r = document.createRange(); r.selectNodeContents(document.getElementById('export-json'));
+      const sel = getSelection(); sel.removeAllRanges(); sel.addRange(r); el.textContent = 'Selectat, apasă Ctrl+C';
+    });
+  },
+  reset() {
+    try { localStorage.removeItem(KEY); localStorage.removeItem(KEY + '-sesiune'); } catch (e) {}
+    db = freshDb(); sess = freshSession(); flash('Demo-ul a fost resetat la produsele inițiale.'); go('acasa');
+  },
+};
+
+// ---------- Evenimente ----------
+function armed(el) {
+  if (!el.dataset.confirm || el.dataset.armed) return true;
+  const original = el.textContent;
+  el.dataset.armed = '1'; el.textContent = el.dataset.confirm;
+  setTimeout(() => { if (el.isConnected) { delete el.dataset.armed; el.textContent = original; } }, 4000);
+  return false;
+}
+document.addEventListener('click', e => {
+  const el = e.target.closest('a, button');
+  if (!el) return;
+  if (el.dataset.confirm && !armed(el)) { e.preventDefault(); return; }
+  if (el.dataset.scroll) {
+    const t = document.getElementById(el.dataset.scroll);
+    if (t) { e.preventDefault(); t.scrollIntoView({ behavior: 'smooth' }); return; }
+  }
+  if (el.dataset.origin) sess.origin = { from: el.dataset.origin, client: +el.dataset.client || null };
+  if (el.dataset.after) sess.afterLogin = el.dataset.after;
+  if (el.dataset.add) { addToCart(+el.dataset.add, 1); return; }
+  if (el.dataset.action && ACTIONS[el.dataset.action]) { e.preventDefault(); ACTIONS[el.dataset.action](el); save(); }
+});
+document.addEventListener('submit', e => {
+  const form = e.target, handler = FORMS[form.dataset.form];
+  if (!handler) return;
+  e.preventDefault();
+  const fd = {}; new FormData(form).forEach((v, k) => { fd[k] = typeof v === 'string' ? v : ''; });
+  if (e.submitter && e.submitter.name) fd[e.submitter.name] = e.submitter.value;
+  handler(fd, e.submitter, form);
+  save();
+});
+document.addEventListener('change', e => {
+  const el = e.target;
+  if (el.dataset.status) {
+    const o = db.orders.find(x => x.id === +el.dataset.status);
+    o.status = el.value; flash(`Comanda #${o.id} e acum „${STATUS[o.status]}”.`); save(); route();
+  }
+  if (el.id === 'saved-address') {
+    const opt = el.selectedOptions[0];
+    document.getElementById('address').value = opt.dataset.address; document.getElementById('city').value = opt.dataset.city;
+  }
+  if (el.id === 'f-image' && el.files[0]) {
+    const reader = new FileReader();
+    reader.onload = () => {
+      const img = new Image();
+      img.onload = () => {
+        const scale = Math.min(1, 900 / Math.max(img.width, img.height));
+        const cv = document.createElement('canvas'); cv.width = Math.round(img.width * scale); cv.height = Math.round(img.height * scale);
+        cv.getContext('2d').drawImage(img, 0, 0, cv.width, cv.height);
+        const url = cv.toDataURL('image/jpeg', 0.8);
+        document.getElementById('f-image-data').value = url;
+        const pv = document.getElementById('f-image-preview'); pv.src = url; pv.hidden = false;
+      };
+      img.src = reader.result;
+    };
+    reader.readAsDataURL(el.files[0]);
+  }
+});
+
+document.getElementById('nav-links').innerHTML = db.categories.map(c => `<a href="#c-${c.slug}" data-cat="${c.slug}">${esc(c.name)}</a>`).join('');
+document.getElementById('footer-cats').innerHTML = db.categories.map(c => `<li><a href="#c-${c.slug}">${esc(c.name)}</a></li>`).join('');
+const fitNav = window.setupCategoryNav();
+window.addEventListener('hashchange', route);
+route();
+
+</script>
+</body>
+</html>
