@@ -1,0 +1,28 @@
+{% extends "account/base_account.html" %}
+{% block title %}Plată{% endblock %}
+{% block account_content %}
+<h1>Plată</h1>
+
+<form method="post" class="card account-section">
+  <h2>Metoda preferată</h2>
+  <p class="muted">O alegem automat pentru tine când plasezi o comandă. O poți schimba oricând.</p>
+  <div class="pay-options">
+    {% for key, label in PAYMENT_METHODS.items() %}
+    <label class="pay-option">
+      <input type="radio" name="preferred_payment" value="{{ key }}" {% if customer.preferred_payment == key %}checked{% endif %}>
+      <span><strong>{{ label }}</strong></span>
+    </label>
+    {% endfor %}
+  </div>
+  <button type="submit" class="btn">Salvează</button>
+</form>
+
+<section class="card account-section">
+  <h2>Carduri salvate</h2>
+  <div class="empty-inline">
+    <p><strong>Nu ai carduri salvate.</strong></p>
+    <p class="muted">Când plata online va fi activă, vei putea salva un card la prima plată. Datele cardului
+      le păstrează procesatorul de plăți, nu MobilaTa. Noi vedem doar tipul cardului și ultimele 4 cifre, de exemplu „Visa ···· 4242”.</p>
+  </div>
+</section>
+{% endblock %}

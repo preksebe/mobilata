@@ -1,0 +1,148 @@
+{% extends "admin/base_admin.html" %}
+{% from "_macros.html" import order_rows with context %}
+{% block title %}{{ c.name }} · Clienți{% endblock %}
+{% block admin_content %}
+<a href="{{ url_for('admin_customers') }}" class="back-link">← Toți clienții</a>
+<div class="admin-head">
+  <h1>{{ c.name }}</h1>
+  <div class="pill-row">
+    {% if c.password_hash %}<span class="role-pill">Intră cu parolă</span>{% endif %}
+    {% if c.google_sub %}<span class="role-pill role-admin">Conectat cu Google</span>{% endif %}
+    <span class="muted small">Client din {{ c.created_at }}</span>
+  </div>
+</div>
+
+<div class="customer-grid">
+  <div class="customer-col">
+    <form method="post" class="card account-section">
+      <h2>Date de contact</h2>
+      <input type="hidden" name="section" value="profile">
+      <div class="field-grid">
+        <div class="field">
+          <label for="name">Nume</label>
+          <input type="text" id="name" name="name" value="{{ c.name }}" required>
+        </div>
+        <div class="field">
+          <label for="phone">Telefon</label>
+          <input type="tel" id="phone" name="phone" value="{{ c.phone or '' }}">
+        </div>
+        <div class="field field-wide">
+          <label for="email">Email</label>
+          <input type="email" id="email" name="email" value="{{ c.email }}" required>
+          <p class="muted small field-note">Schimbă emailul doar la cererea clientului. Cu el intră în cont.</p>
+        </div>
+        <div class="field field-wide">
+          <label for="preferred_payment">Metoda de plată preferată</label>
+          <select id="preferred_payment" name="preferred_payment">
+            <option value="">Nealeasă</option>
+            {% for key, label in PAYMENT_METHODS.items() %}
+            <option value="{{ key }}" {% if c.preferred_payment == key %}selected{% endif %}>{{ label }}</option>
+            {% endfor %}
+          </select>
+        </div>
+      </div>
+      <button type="submit" class="btn">Salvează datele</button>
+    </form>
+
+    <section class="card account-section" id="adrese">
+      <h2>Adrese</h2>
+      {% for a in addresses %}
+      <details class="address-edit">
+        <summary>
+          <span><strong>{{ a.label }}</strong>{% if a.is_default %} <span class="role-pill role-admin">Principală</span>{% endif %}<br>
+          <span class="muted">{{ a.address }}, {{ a.city }}</span></span>
+          <span class="link-like">Modifică</span>
+        </summary>
+        <form method="post" class="address-edit-form">
+          <input type="hidden" name="section" value="address">
+          <input type="hidden" name="action" value="edit">
+          <input type="hidden" name="address_id" value="{{ a.id }}">
+          <div class="field-grid">
+            <div class="field"><label for="label-{{ a.id }}">Nume adresă</label><input type="text" id="label-{{ a.id }}" name="label" value="{{ a.label }}" maxlength="40"></div>
+            <div class="field"><label for="city-{{ a.id }}">Oraș</label><input type="text" id="city-{{ a.id }}" name="city" value="{{ a.city }}" required></div>
+            <div class="field field-wide"><label for="address-{{ a.id }}">Adresă</label><input type="text" id="address-{{ a.id }}" name="address" value="{{ a.address }}" required></div>
+          </div>
+          <button type="submit" class="btn btn-small">Salvează adresa</button>
+        </form>
+        <div class="address-actions">
+          {% if not a.is_default %}
+          <form method="post"><input type="hidden" name="section" value="address"><input type="hidden" name="action" value="default"><input type="hidden" name="address_id" value="{{ a.id }}">
+            <button type="submit" class="btn btn-ghost btn-small">Fă-o principală</button></form>
+          {% endif %}
+          <form method="post" data-confirm="Ștergi adresa „{{ a.label }}”?"><input type="hidden" name="section" value="address"><input type="hidden" name="action" value="delete"><input type="hidden" name="address_id" value="{{ a.id }}">
+            <button type="submit" class="btn btn-danger btn-small">Șterge adresa</button></form>
+        </div>
+      </details>
+      {% else %}
+      <p class="muted">Clientul nu are adrese salvate.</p>
+      {% endfor %}
+
+      <details class="address-edit address-new">
+        <summary><span><strong>+ Adaugă o adresă</strong></span></summary>
+        <form method="post" class="address-edit-form">
+          <input type="hidden" name="section" value="address">
+          <input type="hidden" name="action" value="add">
+          <div class="field-grid">
+            <div class="field"><label for="label-new">Nume adresă</label><input type="text" id="label-new" name="label" placeholder="ex. Acasă" maxlength="40"></div>
+            <div class="field"><label for="city-new">Oraș</label><input type="text" id="city-new" name="city" required></div>
+            <div class="field field-wide"><label for="address-new">Adresă</label><input type="text" id="address-new" name="address" required></div>
+          </div>
+          <button type="submit" class="btn btn-small">Adaugă adresa</button>
+        </form>
+      </details>
+    </section>
+
+    <section class="account-section">
+      <h2>Comenzi ({{ orders|length }})</h2>
+      {% if orders %}{{ order_rows(orders, origin='admin', client_id=c.id) }}
+      {% else %}<p class="muted">Clientul nu are comenzi.</p>{% endif %}
+    </section>
+  </div>
+
+  <div class="customer-col">
+    <form method="post" class="card account-section" id="parola">
+      <h2>Parolă temporară</h2>
+      <p class="muted small">Parola clientului nu se poate vedea. Dacă a uitat-o, setează una temporară, spune-i-o pe telefon și roagă-l să o schimbe din „Datele mele”.</p>
+      <input type="hidden" name="section" value="password">
+      <label for="new_password">Parolă nouă (minimum 8 caractere)</label>
+      <input type="text" id="new_password" name="new_password" minlength="8" autocomplete="off" required>
+      <button type="submit" class="btn btn-ghost btn-block">Setează parola temporară</button>
+    </form>
+
+    <section class="card account-section" id="gdpr">
+      <h2>Acorduri și GDPR</h2>
+      <p class="small"><strong>Termeni acceptați:</strong> {{ c.terms_accepted_at }}</p>
+      <p class="small"><strong>Emailuri de marketing:</strong> {{ 'Da' if c.marketing_opt_in else 'Nu' }}</p>
+      {% if c.marketing_opt_in %}
+      <form method="post">
+        <input type="hidden" name="section" value="marketing">
+        <button type="submit" class="btn btn-ghost btn-small">Retrage acordul (la cererea clientului)</button>
+      </form>
+      {% endif %}
+      <p class="muted small">Acordul de marketing îl poate da doar clientul, din contul lui.</p>
+
+      <form method="post" class="danger-inline" data-confirm="Ștergi definitiv contul lui {{ c.name }}?">
+        <h3>Șterge contul</h3>
+        <p class="muted small">Doar la cererea clientului. Comenzile rămân în evidență, fără legătură cu contul.</p>
+        <input type="hidden" name="section" value="delete">
+        <label for="confirm_email">Scrie emailul clientului ca să confirmi</label>
+        <input type="text" id="confirm_email" name="confirm_email" autocomplete="off" required>
+        <button type="submit" class="btn btn-danger-solid btn-block">Șterge contul</button>
+      </form>
+    </section>
+
+    <section class="card account-section">
+      <h2>Istoric modificări</h2>
+      {% if log %}
+      <ul class="log-list">
+        {% for entry in log %}
+        <li><span>{{ entry.action }}</span><span class="muted small">{{ entry.staff_username }} · {{ entry.created_at }}</span></li>
+        {% endfor %}
+      </ul>
+      {% else %}
+      <p class="muted small">Echipa nu a modificat încă nimic la acest client.</p>
+      {% endif %}
+    </section>
+  </div>
+</div>
+{% endblock %}

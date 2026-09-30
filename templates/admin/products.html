@@ -1,0 +1,36 @@
+{% extends "admin/base_admin.html" %}
+{% block title %}Produse · Administrare{% endblock %}
+{% block admin_content %}
+<div class="admin-head">
+  <h1>Produse <span class="muted">({{ products|length }})</span></h1>
+  <a href="{{ url_for('admin_product_form') }}" class="btn">+ Adaugă produs</a>
+</div>
+
+<div class="table-wrap">
+  <table class="admin-table">
+    <thead>
+      <tr><th></th><th>Produs</th><th>Categorie</th><th class="num">Preț</th><th class="num">Stoc</th><th></th></tr>
+    </thead>
+    <tbody>
+      {% for p in products %}
+      <tr>
+        <td><img src="{{ p.image|img }}" alt="" class="thumb"></td>
+        <td><a href="{{ url_for('product', slug=p.slug) }}" target="_blank" rel="noopener">{{ p.name }}</a></td>
+        <td>{{ p.category_name }}</td>
+        <td class="num">{{ p.price|lei }}</td>
+        <td class="num {% if p.stock == 0 %}stock-out{% elif p.stock <= 3 %}stock-low{% endif %}">{{ p.stock }}</td>
+        <td class="row-actions">
+          <a href="{{ url_for('admin_product_form', product_id=p.id) }}" class="btn btn-ghost btn-small">Editează</a>
+          <form method="post" action="{{ url_for('admin_product_delete', product_id=p.id) }}"
+                data-confirm="Sigur scoți „{{ p.name }}” din magazin?">
+            <button type="submit" class="btn btn-danger btn-small">Scoate</button>
+          </form>
+        </td>
+      </tr>
+      {% else %}
+      <tr><td colspan="6" class="muted">Nu există produse. Adaugă primul produs.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block title %}{{ code }}{% endblock %}
+{% block content %}
+<div class="container narrow-page small-page">
+  <div class="empty-state">
+    <p class="eyebrow">Eroare {{ code }}</p>
+    <h1>{{ message }}</h1>
+    <a href="{{ url_for('index') }}" class="btn">Înapoi acasă</a>
+  </div>
+</div>
+{% endblock %}

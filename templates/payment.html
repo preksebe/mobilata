@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}Plată cu cardul{% endblock %}
+{% block content %}
+
+<div class="container narrow-page small-page">
+  <div class="card payment-card">
+    <p class="eyebrow">Comanda #{{ order.id }}</p>
+    <h1>Plată cu cardul</h1>
+    <p class="price price-big">{{ order.total|lei }}</p>
+
+    <div class="sim-note">
+      <strong>Simulare.</strong> Aici va veni formularul unui procesator de plăți (de exemplu Stripe sau Netopia).
+      Pentru moment nu se introduc date de card și nu se plătesc bani reali. Alege ce vrei să testezi:
+    </div>
+
+    <form method="post" class="payment-actions">
+      <button type="submit" name="result" value="ok" class="btn btn-large">Simulează plată reușită</button>
+      <button type="submit" name="result" value="fail" class="btn btn-ghost">Simulează plată refuzată</button>
+    </form>
+  </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,52 @@
+{% extends "account/base_account.html" %}
+{% block title %}Datele mele{% endblock %}
+{% block account_content %}
+<h1>Datele mele</h1>
+
+<form method="post" class="card account-section">
+  <h2>Date personale</h2>
+  <input type="hidden" name="action" value="profile">
+  <div class="field-grid">
+    <div class="field">
+      <label for="name">Nume complet</label>
+      <input type="text" id="name" name="name" value="{{ customer.name }}" autocomplete="name" required>
+    </div>
+    <div class="field">
+      <label for="phone">Telefon</label>
+      <input type="tel" id="phone" name="phone" value="{{ customer.phone or '' }}" autocomplete="tel">
+    </div>
+    <div class="field field-wide">
+      <label for="email">Email</label>
+      <input type="email" id="email" value="{{ customer.email }}" disabled>
+      <p class="muted small field-note">Emailul e folosit pentru autentificare și nu se poate schimba din cont.
+        {% if customer.google_sub %}Contul e conectat cu Google.{% endif %}</p>
+    </div>
+  </div>
+  <button type="submit" class="btn">Salvează</button>
+</form>
+
+<form method="post" class="card account-section">
+  <h2>{{ 'Schimbă parola' if customer.password_hash else 'Setează o parolă' }}</h2>
+  {% if not customer.password_hash %}
+  <p class="muted">Acum intri doar cu Google. Dacă setezi o parolă, vei putea intra și cu emailul.</p>
+  {% endif %}
+  <input type="hidden" name="action" value="password">
+  <div class="field-grid">
+    {% if customer.password_hash %}
+    <div class="field field-wide">
+      <label for="current_password">Parola actuală</label>
+      <input type="password" id="current_password" name="current_password" autocomplete="current-password" required>
+    </div>
+    {% endif %}
+    <div class="field">
+      <label for="new_password">Parola nouă (minimum 8 caractere)</label>
+      <input type="password" id="new_password" name="new_password" minlength="8" autocomplete="new-password" required>
+    </div>
+    <div class="field">
+      <label for="new_password2">Repetă parola nouă</label>
+      <input type="password" id="new_password2" name="new_password2" minlength="8" autocomplete="new-password" required>
+    </div>
+  </div>
+  <button type="submit" class="btn">{{ 'Schimbă parola' if customer.password_hash else 'Setează parola' }}</button>
+</form>
+{% endblock %}

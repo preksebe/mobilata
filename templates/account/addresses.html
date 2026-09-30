@@ -1,0 +1,53 @@
+{% extends "account/base_account.html" %}
+{% block title %}Adresele mele{% endblock %}
+{% block account_content %}
+<h1>Adrese</h1>
+
+<div class="address-grid">
+  {% for a in addresses %}
+  <article class="card address-card {% if a.is_default %}is-default{% endif %}">
+    <header>
+      <strong>{{ a.label }}</strong>
+      {% if a.is_default %}<span class="role-pill role-admin">Principală</span>{% endif %}
+    </header>
+    <p>{{ a.address }}<br>{{ a.city }}</p>
+    <div class="address-actions">
+      {% if not a.is_default %}
+      <form method="post">
+        <input type="hidden" name="action" value="default">
+        <input type="hidden" name="address_id" value="{{ a.id }}">
+        <button type="submit" class="btn btn-ghost btn-small">Fă-o principală</button>
+      </form>
+      {% endif %}
+      <form method="post">
+        <input type="hidden" name="action" value="delete">
+        <input type="hidden" name="address_id" value="{{ a.id }}">
+        <button type="submit" class="btn btn-danger btn-small">Șterge</button>
+      </form>
+    </div>
+  </article>
+  {% else %}
+  <p class="muted">Nu ai adrese salvate. Adaugă una aici sau bifează „Salvează adresa” când plasezi o comandă.</p>
+  {% endfor %}
+</div>
+
+<form method="post" class="card address-form">
+  <h2>Adaugă o adresă</h2>
+  <input type="hidden" name="action" value="add">
+  <div class="field-grid">
+    <div class="field">
+      <label for="label">Nume adresă</label>
+      <input type="text" id="label" name="label" placeholder="ex. Acasă, Birou" maxlength="40">
+    </div>
+    <div class="field">
+      <label for="city">Oraș</label>
+      <input type="text" id="city" name="city" autocomplete="address-level2" required>
+    </div>
+    <div class="field field-wide">
+      <label for="address">Adresă (stradă, număr, bloc, apartament)</label>
+      <input type="text" id="address" name="address" autocomplete="street-address" required>
+    </div>
+  </div>
+  <button type="submit" class="btn">Salvează adresa</button>
+</form>
+{% endblock %}

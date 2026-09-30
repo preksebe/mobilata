@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %}Credite foto{% endblock %}
+{% block content %}
+
+<div class="container narrow-page">
+  <h1>Credite foto</h1>
+  <p class="muted">Toate fotografiile sunt de pe <a href="https://unsplash.com" rel="noopener" target="_blank">Unsplash</a>, folosite sub licența Unsplash. Mulțumim fotografilor:</p>
+  <ul class="credits-list">
+    {% for file, author in credits %}
+    <li><img src="{{ url_for('static', filename='img/' ~ file) }}" alt="" loading="lazy"><span>{{ author }}</span></li>
+    {% endfor %}
+  </ul>
+</div>
+
+{% endblock %}

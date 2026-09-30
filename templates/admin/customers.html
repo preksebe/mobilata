@@ -1,0 +1,38 @@
+{% extends "admin/base_admin.html" %}
+{% block title %}Clienți · Administrare{% endblock %}
+{% block admin_content %}
+<div class="admin-head">
+  <h1>Clienți <span class="muted">({{ customers|length }})</span></h1>
+  <form method="get" class="search-form" role="search">
+    <label class="sr-only" for="q">Caută client</label>
+    <input type="search" id="q" name="q" value="{{ q }}" placeholder="Caută după nume, email sau telefon">
+    <button type="submit" class="btn btn-ghost">Caută</button>
+    {% if q %}<a href="{{ url_for('admin_customers') }}" class="link-button">Toți clienții</a>{% endif %}
+  </form>
+</div>
+
+<div class="table-wrap">
+  <table class="admin-table">
+    <thead>
+      <tr><th>Client</th><th>Telefon</th><th>Intră cu</th><th class="num">Comenzi</th><th class="num">Total cumpărat</th><th>Cont creat</th></tr>
+    </thead>
+    <tbody>
+      {% for c in customers %}
+      <tr>
+        <td><a href="{{ url_for('admin_customer', customer_id=c.id) }}">{{ c.name }}</a><br><span class="muted small">{{ c.email }}</span></td>
+        <td>{{ c.phone or '–' }}</td>
+        <td>
+          {% if c.has_password %}<span class="role-pill">Parolă</span>{% endif %}
+          {% if c.has_google %}<span class="role-pill role-admin">Google</span>{% endif %}
+        </td>
+        <td class="num">{{ c.order_count }}</td>
+        <td class="num">{{ c.total_spent|lei }}</td>
+        <td>{{ c.created_at }}</td>
+      </tr>
+      {% else %}
+      <tr><td colspan="6" class="muted">{{ 'Niciun client nu se potrivește căutării.' if q else 'Încă nu există clienți cu cont.' }}</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

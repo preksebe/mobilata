@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% block title %}Comanda #{{ order.id }}{% endblock %}
+{% block content %}
+
+<div class="container narrow-page small-page">
+  <div class="card done-card">
+    {% set origin = request.args.get('din') %}
+    {% set from_account = origin in ('cont', 'admin') %}
+    {% if from_account %}
+    {% if origin == 'admin' and session.role == 'admin' %}
+      {% set client_id = (request.args.get('client') or order.customer_id or 0)|int %}
+      {% if client_id %}
+      <a href="{{ url_for('admin_customer', customer_id=client_id) }}" class="back-link">← Fișa clientului</a>
+      {% else %}
+      <a href="{{ url_for('admin_orders') }}" class="back-link">← Toate comenzile</a>
+      {% endif %}
+    {% else %}
+    <a href="{{ url_for('account_orders') }}" class="back-link">← Comenzile mele</a>
+    {% endif %}
+    <p class="eyebrow">Plasată pe {{ order.created_at }}</p>
+    <h1>Comanda #{{ order.id }}</h1>
+    {% else %}
+    <p class="eyebrow">Comanda #{{ order.id }}</p>
+    <h1>Mulțumim, {{ order.customer_name.split(' ')[0] }}!</h1>
+    {% endif %}
+    <p class="status-pill status-{{ order.status }}">{{ ORDER_STATUSES[order.status] }}</p>
+
+    {% if order.payment_method == 'card' and order.status == 'platita' %}
+      <p>Plata a fost primită. Îți pregătim comanda.</p>
+    {% elif order.payment_method == 'ramburs' %}
+      <p>Plătești {{ order.total|lei }} curierului, la livrare.</p>
+    {% elif order.payment_method == 'transfer' %}
+      <p>Fă un transfer de <strong>{{ order.total|lei }}</strong> cu mențiunea <strong>Comanda {{ order.id }}</strong>.
+         Datele contului bancar le completăm când magazinul are un cont real.</p>
+    {% endif %}
+
+    <h2>Ce ai comandat</h2>
+    <ul class="summary-items">
+      {% for it in items %}
+      <li><span>{{ it.qty }} × {{ it.name }}</span><span>{{ (it.price * it.qty)|lei }}</span></li>
+      {% endfor %}
+    </ul>
+    <dl class="summary">
+      <div><dt>Livrare</dt><dd>{{ 'Gratuită' if order.shipping == 0 else order.shipping|lei }}</dd></div>
+      <div class="summary-total"><dt>Total</dt><dd>{{ order.total|lei }}</dd></div>
+    </dl>
+    <p class="muted small">Livrare la: {{ order.address }}, {{ order.city }}. Te sunăm la {{ order.phone }}.</p>
+    {% if order.payment_method == 'card' and order.status == 'asteptare_plata' %}
+    <a href="{{ url_for('payment', order_id=order.id) }}" class="btn">Plătește acum</a>
+    {% elif not from_account %}
+    <div class="done-actions">
+      <a href="{{ url_for('index') }}" class="btn">Înapoi în magazin</a>
+      {% if customer %}<a href="{{ url_for('account_orders') }}" class="btn btn-ghost">Vezi comenzile mele</a>{% endif %}
+    </div>
+    {% endif %}
+  </div>
+</div>
+
+{% endblock %}

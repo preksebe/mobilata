@@ -1,0 +1,106 @@
+{% extends "base.html" %}
+{% from "_macros.html" import stars, product_card %}
+{% block title %}{{ product.name }}{% endblock %}
+{% block content %}
+
+<div class="container">
+  <nav class="breadcrumb breadcrumb-plain">
+    <a href="{{ url_for('index') }}">Acasă</a> <span>/</span>
+    <a href="{{ url_for('category', slug=product.category_slug) }}">{{ product.category_name }}</a> <span>/</span>
+    {{ product.name }}
+  </nav>
+
+  <section class="product-detail">
+    <div class="product-detail-img">
+      <img src="{{ product.image|img }}" alt="{{ product.name }}">
+    </div>
+
+    <div class="product-detail-info">
+      <h1>{{ product.name }}</h1>
+      <a href="#recenzii" class="rating-link">{{ stars(product.avg_rating, product.review_count) }}
+        <span>{{ '%.1f'|format(product.avg_rating) }} din 5</span></a>
+      <p class="price price-big">{{ product.price|lei }}</p>
+      <p class="lead">{{ product.short_desc }}</p>
+
+      {% if product.stock > 0 %}
+        <p class="stock {% if product.stock <= 3 %}stock-low{% endif %}">
+          {% if product.stock <= 3 %}Doar {{ product.stock }} în stoc{% else %}În stoc{% endif %}
+        </p>
+        <form method="post" action="{{ url_for('cart_add') }}" class="add-form">
+          <input type="hidden" name="product_id" value="{{ product.id }}">
+          <input type="hidden" name="next" value="{{ request.path }}">
+          <label for="qty">Cantitate</label>
+          <input type="number" id="qty" name="qty" value="1" min="1" max="{{ product.stock }}">
+          <button type="submit" class="btn btn-large">Adaugă în coș</button>
+        </form>
+      {% else %}
+        <p class="stock stock-out">Stoc epuizat</p>
+      {% endif %}
+
+      <dl class="specs">
+        <div><dt>Material</dt><dd>{{ product.material or '–' }}</dd></div>
+        <div><dt>Dimensiuni</dt><dd>{{ product.dimensions or '–' }}</dd></div>
+        <div><dt>Culoare</dt><dd>{{ product.color or '–' }}</dd></div>
+      </dl>
+    </div>
+  </section>
+
+  {% if product.description %}
+  <section class="product-description">
+    <h2>Despre produs</h2>
+    <p>{{ product.description }}</p>
+  </section>
+  {% endif %}
+
+  <section class="reviews" id="recenzii">
+    <div class="reviews-head">
+      <h2>Recenzii</h2>
+      <p>{{ stars(product.avg_rating) }} <strong>{{ '%.1f'|format(product.avg_rating) }}</strong> din 5, {{ product.review_count }} {{ 'recenzie' if product.review_count == 1 else 'recenzii' }}</p>
+    </div>
+
+    <div class="reviews-grid">
+      <div class="review-list">
+        {% for r in reviews %}
+        <article class="review">
+          <header>
+            <strong>{{ r.author }}</strong>
+            {{ stars(r.rating) }}
+          </header>
+          <p>{{ r.text }}</p>
+        </article>
+        {% else %}
+        <p class="muted">Încă nu există recenzii. Fii primul care scrie una.</p>
+        {% endfor %}
+      </div>
+
+      <form method="post" action="{{ url_for('add_review', slug=product.slug) }}" class="review-form card">
+        <h3>Scrie o recenzie</h3>
+        <label for="author">Numele tău</label>
+        <input type="text" id="author" name="author" maxlength="60" required>
+        <fieldset class="rating-fieldset">
+          <legend>Nota ta</legend>
+          <div class="rating-input">
+            {% for n in range(5, 0, -1) %}
+              <input type="radio" id="rating-{{ n }}" name="rating" value="{{ n }}" {% if n == 5 %}checked{% endif %}>
+              <label for="rating-{{ n }}" title="{{ n }} {{ 'stea' if n == 1 else 'stele' }}">★</label>
+            {% endfor %}
+          </div>
+        </fieldset>
+        <label for="text">Părerea ta</label>
+        <textarea id="text" name="text" rows="4" maxlength="1000" required></textarea>
+        <button type="submit" class="btn">Publică recenzia</button>
+      </form>
+    </div>
+  </section>
+
+  {% if related %}
+  <section class="related">
+    <h2>Din aceeași categorie</h2>
+    <div class="product-grid product-grid-3">
+      {% for p in related %}{{ product_card(p) }}{% endfor %}
+    </div>
+  </section>
+  {% endif %}
+</div>
+
+{% endblock %}

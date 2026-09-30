@@ -1,0 +1,35 @@
+{% extends "account/base_account.html" %}
+{% block title %}Confidențialitate{% endblock %}
+{% block account_content %}
+<h1>Confidențialitate și date personale</h1>
+<p class="muted">Conform GDPR, ai control asupra datelor tale. Detalii în <a href="{{ url_for('privacy_policy') }}">politica de confidențialitate</a>.</p>
+
+<form method="post" class="card account-section">
+  <h2>Acordurile tale</h2>
+  <p><strong>Termeni și confidențialitate:</strong> acceptați pe {{ customer.terms_accepted_at }}.</p>
+  <label class="check">
+    <input type="checkbox" name="marketing" value="1" {% if customer.marketing_opt_in %}checked{% endif %}>
+    <span>Vreau să primesc pe email oferte și noutăți de la MobilaTa.</span>
+  </label>
+  <button type="submit" class="btn">Salvează preferințele</button>
+</form>
+
+<section class="card account-section">
+  <h2>Descarcă datele tale</h2>
+  <p class="muted">Primești un fișier cu toate datele pe care le avem despre tine: cont, adrese și comenzi.</p>
+  <a href="{{ url_for('account_export') }}" class="btn btn-ghost">Descarcă datele (JSON)</a>
+</section>
+
+<form method="post" action="{{ url_for('account_delete') }}" class="card account-section danger-zone" id="sterge">
+  <h2>Șterge contul</h2>
+  <p>Ștergem contul, adresele salvate și preferințele tale. <strong>Acțiunea nu se poate anula.</strong></p>
+  <p class="muted small">Comenzile deja plasate rămân în evidența magazinului, fără legătură cu vreun cont, pentru obligațiile legale de contabilitate.</p>
+  <label for="confirm">Scrie <strong>ȘTERGE</strong> ca să confirmi</label>
+  <input type="text" id="confirm" name="confirm" autocomplete="off" required>
+  {% if customer.password_hash %}
+  <label for="del-password">Parola ta</label>
+  <input type="password" id="del-password" name="password" autocomplete="current-password" required>
+  {% endif %}
+  <button type="submit" class="btn btn-danger-solid">Șterge definitiv contul</button>
+</form>
+{% endblock %}

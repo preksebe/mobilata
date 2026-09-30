@@ -1,0 +1,48 @@
+{% macro stars(rating, count=None) -%}
+<span class="stars" aria-label="{{ '%.1f'|format(rating) }} din 5 stele">
+  {%- set full = rating|round|int -%}
+  {%- for i in range(5) -%}<span class="star{% if i < full %} on{% endif %}">★</span>{%- endfor -%}
+</span>
+{%- if count is not none %}<span class="star-count">({{ count }})</span>{% endif %}
+{%- endmacro %}
+
+{% macro order_rows(orders, origin='cont', client_id=None) -%}
+<div class="order-list">
+  {% for o in orders %}
+  <a href="{{ url_for('order_done', order_id=o.id, din=origin, client=client_id) }}" class="order-row">
+    <span class="order-id">#{{ o.id }}</span>
+    <span class="order-what">
+      <strong>{{ o.first_item }}{% if o.item_count > 1 %} <span class="muted">și încă {{ o.item_count - 1 }} {{ 'produs' if o.item_count == 2 else 'produse' }}</span>{% endif %}</strong>
+      <span class="muted small">{{ o.created_at }} · {{ PAYMENT_METHODS[o.payment_method] }}</span>
+    </span>
+    <span class="status-pill status-{{ o.status }}">{{ ORDER_STATUSES[o.status] }}</span>
+    <span class="order-total">{{ o.total|lei }}</span>
+  </a>
+  {% endfor %}
+</div>
+{%- endmacro %}
+
+{% macro product_card(p) -%}
+<article class="product-card">
+  <a href="{{ url_for('product', slug=p.slug) }}" class="product-card-link">
+    <div class="product-card-img"><img src="{{ p.image|img }}" alt="{{ p.name }}" loading="lazy"></div>
+    <div class="product-card-body">
+      <h3>{{ p.name }}</h3>
+      <p class="product-card-desc">{{ p.short_desc }}</p>
+      <div class="product-card-rating">{{ stars(p.avg_rating, p.review_count) }}</div>
+    </div>
+  </a>
+  <div class="product-card-foot">
+    <span class="price">{{ p.price|lei }}</span>
+    {% if p.stock > 0 %}
+    <form method="post" action="{{ url_for('cart_add') }}">
+      <input type="hidden" name="product_id" value="{{ p.id }}">
+      <input type="hidden" name="next" value="{{ request.path }}">
+      <button type="submit" class="btn btn-small">Adaugă în coș</button>
+    </form>
+    {% else %}
+    <span class="out-of-stock">Stoc epuizat</span>
+    {% endif %}
+  </div>
+</article>
+{%- endmacro %}

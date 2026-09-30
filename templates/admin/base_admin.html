@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block body_class %}admin-body{% endblock %}
+{% block content %}
+<div class="container admin-layout">
+  <aside class="admin-side">
+    <p class="admin-user">
+      <strong>{{ session.username }}</strong>
+      <span class="muted small">{{ ROLES[session.role] }}</span>
+    </p>
+    <nav class="admin-nav">
+      <a href="{{ url_for('admin_products') }}" class="{% if active == 'produse' %}active{% endif %}">Produse</a>
+      {% if session.role == 'admin' %}
+      <a href="{{ url_for('admin_orders') }}" class="{% if active == 'comenzi' %}active{% endif %}">Comenzi</a>
+      <a href="{{ url_for('admin_customers') }}" class="{% if active == 'clienti' %}active{% endif %}">Clienți</a>
+      <a href="{{ url_for('admin_users') }}" class="{% if active == 'utilizatori' %}active{% endif %}">Utilizatori</a>
+      {% endif %}
+      <a href="{{ url_for('index') }}">Vezi magazinul</a>
+    </nav>
+    <form method="post" action="{{ url_for('logout') }}">
+      <button type="submit" class="btn btn-ghost btn-small btn-block">Ieși din administrare</button>
+    </form>
+  </aside>
+  <section class="admin-main">
+    {% block admin_content %}{% endblock %}
+  </section>
+</div>
+{% endblock %}

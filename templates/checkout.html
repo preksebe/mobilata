@@ -1,0 +1,106 @@
+{% extends "base.html" %}
+{% block title %}Finalizează comanda{% endblock %}
+{% block content %}
+
+<div class="container narrow-page">
+  <h1>Finalizează comanda</h1>
+
+  {% if errors %}
+  <div class="flash flash-error">
+    <strong>Mai ai de completat:</strong>
+    <ul>{% for e in errors %}<li>{{ e }}</li>{% endfor %}</ul>
+  </div>
+  {% endif %}
+
+  <div class="cart-layout">
+    <form method="post" class="checkout-form card" novalidate>
+      {% if not customer %}
+      <p class="login-hint">Ai cont? <a href="{{ url_for('customer_login', next=request.path) }}">Intră în cont</a> și completăm noi datele.
+        Sau comandă mai departe fără cont.</p>
+      {% endif %}
+      <h2>Date de livrare</h2>
+      {% if addresses|length > 1 %}
+      <div class="field">
+        <label for="saved-address">Alege o adresă salvată</label>
+        <select id="saved-address">
+          {% for a in addresses %}
+          <option data-address="{{ a.address }}" data-city="{{ a.city }}" {% if a.address == form.address and a.city == form.city %}selected{% endif %}>{{ a.label }}: {{ a.address }}, {{ a.city }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      {% endif %}
+      <div class="field-grid">
+        <div class="field field-wide">
+          <label for="name">Nume complet</label>
+          <input type="text" id="name" name="name" value="{{ form.name }}" autocomplete="name" required>
+        </div>
+        <div class="field">
+          <label for="email">Email</label>
+          <input type="email" id="email" name="email" value="{{ form.email }}" autocomplete="email" required>
+        </div>
+        <div class="field">
+          <label for="phone">Telefon</label>
+          <input type="tel" id="phone" name="phone" value="{{ form.phone }}" autocomplete="tel" required>
+        </div>
+        <div class="field field-wide">
+          <label for="address">Adresă (stradă, număr, bloc, apartament)</label>
+          <input type="text" id="address" name="address" value="{{ form.address }}" autocomplete="street-address" required>
+        </div>
+        <div class="field">
+          <label for="city">Oraș</label>
+          <input type="text" id="city" name="city" value="{{ form.city }}" autocomplete="address-level2" required>
+        </div>
+      </div>
+      {% if customer %}
+      <label class="check">
+        <input type="checkbox" name="save_address" value="1" {% if not addresses %}checked{% endif %}>
+        <span>Salvează adresa în contul meu</span>
+      </label>
+      {% endif %}
+
+      <h2>Metodă de plată</h2>
+      <div class="pay-options">
+        {% for key, label in PAYMENT_METHODS.items() %}
+        <label class="pay-option">
+          <input type="radio" name="payment" value="{{ key }}" {% if form.payment == key or (not form.payment and loop.first) %}checked{% endif %}>
+          <span>
+            <strong>{{ label }}</strong>
+            <span class="muted small">
+              {% if key == 'card' %}Plătești pe pagina următoare. Acum e doar o simulare, fără bani reali.
+              {% elif key == 'ramburs' %}Plătești curierului când primești coletul.
+              {% else %}Primești datele pentru transfer după ce plasezi comanda.{% endif %}
+            </span>
+          </span>
+        </label>
+        {% endfor %}
+      </div>
+
+      <button type="submit" class="btn btn-large btn-block">Plasează comanda</button>
+    </form>
+
+    <aside class="summary card">
+      <h2>Comanda ta</h2>
+      <ul class="summary-items">
+        {% for it in items %}
+        <li><span>{{ it.qty }} × {{ it.product.name }}</span><span>{{ it.line_total|lei }}</span></li>
+        {% endfor %}
+      </ul>
+      <dl>
+        <div><dt>Produse</dt><dd>{{ subtotal|lei }}</dd></div>
+        <div><dt>Livrare</dt><dd>{{ 'Gratuită' if shipping == 0 else shipping|lei }}</dd></div>
+        <div class="summary-total"><dt>Total</dt><dd>{{ total|lei }}</dd></div>
+      </dl>
+    </aside>
+  </div>
+</div>
+
+{% if addresses|length > 1 %}
+<script>
+  document.getElementById('saved-address').addEventListener('change', function () {
+    const opt = this.selectedOptions[0];
+    document.getElementById('address').value = opt.dataset.address;
+    document.getElementById('city').value = opt.dataset.city;
+  });
+</script>
+{% endif %}
+{% endblock %}

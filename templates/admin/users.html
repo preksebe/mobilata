@@ -1,0 +1,46 @@
+{% extends "admin/base_admin.html" %}
+{% block title %}Utilizatori · Administrare{% endblock %}
+{% block admin_content %}
+<div class="admin-head">
+  <h1>Utilizatori</h1>
+</div>
+
+<div class="admin-split">
+  <div class="table-wrap">
+    <table class="admin-table">
+      <thead><tr><th>Utilizator</th><th>Rol</th><th>Creat</th><th></th></tr></thead>
+      <tbody>
+        {% for u in users %}
+        <tr>
+          <td>{{ u.username }}{% if u.id == session.user_id %} <span class="muted small">(tu)</span>{% endif %}</td>
+          <td><span class="role-pill role-{{ u.role }}">{{ ROLES[u.role] }}</span></td>
+          <td>{{ u.created_at }}</td>
+          <td class="row-actions">
+            {% if u.id != session.user_id %}
+            <form method="post" action="{{ url_for('admin_user_delete', user_id=u.id) }}"
+                  data-confirm="Sigur ștergi contul „{{ u.username }}”?">
+              <button type="submit" class="btn btn-danger btn-small">Șterge</button>
+            </form>
+            {% endif %}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <form method="post" action="{{ url_for('admin_user_create') }}" class="card user-form">
+    <h2>Cont nou</h2>
+    <label for="new-username">Utilizator</label>
+    <input type="text" id="new-username" name="username" required>
+    <label for="new-password">Parolă</label>
+    <input type="password" id="new-password" name="password" minlength="4" required autocomplete="new-password">
+    <label for="new-role">Rol</label>
+    <select id="new-role" name="role">
+      <option value="manager">Gestionar produse (doar produse)</option>
+      <option value="admin">Administrator (acces total)</option>
+    </select>
+    <button type="submit" class="btn btn-block">Creează contul</button>
+  </form>
+</div>
+{% endblock %}

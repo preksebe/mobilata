@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% block title %}Coșul meu{% endblock %}
+{% block content %}
+
+<div class="container narrow-page">
+  <h1>Coșul meu</h1>
+
+  {% if items %}
+  <div class="cart-layout">
+    <div class="cart-items">
+      {% for it in items %}
+      {% set p = it.product %}
+      <article class="cart-item">
+        <a href="{{ url_for('product', slug=p.slug) }}" class="cart-item-img"><img src="{{ p.image|img }}" alt="{{ p.name }}"></a>
+        <div class="cart-item-info">
+          <a href="{{ url_for('product', slug=p.slug) }}" class="cart-item-name">{{ p.name }}</a>
+          <span class="muted">{{ p.price|lei }} / buc.</span>
+        </div>
+        <form method="post" action="{{ url_for('cart_update') }}" class="qty-form">
+          <input type="hidden" name="product_id" value="{{ p.id }}">
+          <label class="sr-only" for="qty-{{ p.id }}">Cantitate</label>
+          <input type="number" id="qty-{{ p.id }}" name="qty" value="{{ it.qty }}" min="1" max="{{ p.stock }}">
+          <button type="submit" class="btn btn-ghost btn-small">Actualizează</button>
+        </form>
+        <span class="cart-item-total">{{ it.line_total|lei }}</span>
+        <form method="post" action="{{ url_for('cart_update') }}">
+          <input type="hidden" name="product_id" value="{{ p.id }}">
+          <input type="hidden" name="qty" value="0">
+          <button type="submit" class="link-button" aria-label="Scoate {{ p.name }} din coș">Scoate</button>
+        </form>
+      </article>
+      {% endfor %}
+    </div>
+
+    <aside class="summary card">
+      <h2>Sumar</h2>
+      <dl>
+        <div><dt>Produse</dt><dd>{{ subtotal|lei }}</dd></div>
+        <div><dt>Livrare</dt><dd>{{ 'Gratuită' if shipping == 0 else shipping|lei }}</dd></div>
+        <div class="summary-total"><dt>Total</dt><dd>{{ total|lei }}</dd></div>
+      </dl>
+      {% if shipping %}
+      <p class="muted small">Mai adaugă produse de {{ (free_from - subtotal)|lei }} și livrarea devine gratuită.</p>
+      {% endif %}
+      <a href="{{ url_for('checkout') }}" class="btn btn-large btn-block">Continuă spre comandă</a>
+      <a href="{{ url_for('index') }}#categorii" class="btn btn-ghost btn-block">Mai cumpăr</a>
+    </aside>
+  </div>
+  {% else %}
+  <div class="empty-state">
+    <h2>Coșul tău e gol</h2>
+    <p class="muted">Alege o categorie și adaugă ce-ți place.</p>
+    <a href="{{ url_for('index') }}#categorii" class="btn">Vezi categoriile</a>
+  </div>
+  {% endif %}
+</div>
+
+{% endblock %}

@@ -1,0 +1,12 @@
+# Secrete
+.env
+.env.*
+google_client_secret.json
+
+# Date locale (se recreează la pornire)
+data/
+static/uploads/
+
+# Python
+__pycache__/
+*.pyc

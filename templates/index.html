@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% block title %}Acasă{% endblock %}
+{% block content %}
+
+<section class="hero">
+  <div class="container hero-grid">
+    <div class="hero-text">
+      <p class="eyebrow">Magazin online de mobilă</p>
+      <h1>MobilaTa</h1>
+      <p class="slogan">Mobila ta, de la noi.</p>
+      <p class="hero-lede">Canapele, paturi, mese și tot ce-ți trebuie pentru casă, grădină și birou. Alegi online, noi îți aducem acasă.</p>
+      <a href="#categorii" class="btn btn-large">Alege o categorie</a>
+    </div>
+    <div class="hero-img">
+      <img src="{{ url_for('static', filename='img/hero.jpg') }}" alt="Living modern cu canapea gri și fereastră mare">
+    </div>
+  </div>
+</section>
+
+<section class="categories" id="categorii">
+  <div class="container">
+    <div class="section-head">
+      <h2>Ce cauți azi?</h2>
+      <p class="muted">Alege o cameră și vezi toate produsele din ea.</p>
+    </div>
+    <div class="cat-grid">
+      {% for c in categories %}
+      <a href="{{ url_for('category', slug=c.slug) }}" class="cat-tile">
+        <img src="{{ c.image|img }}" alt="" loading="lazy">
+        <span class="cat-tile-label">
+          <span class="cat-tile-name">{{ c.name }}</span>
+          <span class="cat-tile-count">{{ c.product_count }} {{ 'produs' if c.product_count == 1 else 'produse' }}</span>
+        </span>
+        <span class="cat-tile-arrow" aria-hidden="true">→</span>
+      </a>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<section class="perks">
+  <div class="container perks-grid">
+    <div class="perk">
+      <h3>Livrare gratuită</h3>
+      <p class="muted">La comenzile de peste 1.500 lei. Sub această sumă, livrarea costă 99 lei.</p>
+    </div>
+    <div class="perk">
+      <h3>Plătești cum vrei</h3>
+      <p class="muted">Cu cardul online, ramburs la livrare sau prin transfer bancar.</p>
+    </div>
+    <div class="perk">
+      <h3>Retur în 14 zile</h3>
+      <p class="muted">Dacă produsul nu ți se potrivește, îl poți returna.</p>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

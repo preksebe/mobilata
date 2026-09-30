@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block title %}Politica de confidențialitate{% endblock %}
+{% block content %}
+
+<div class="container narrow-page prose">
+  <h1>Politica de confidențialitate</h1>
+  <p class="draft-note"><strong>Schiță.</strong> Textul de mai jos e un punct de plecare pentru un magazin demonstrativ.
+    Înainte de lansarea unui magazin real, trebuie completat cu datele firmei și verificat de un specialist în protecția datelor.</p>
+
+  <h2>Cine suntem</h2>
+  <p>MobilaTa este operatorul datelor tale. Datele de identificare ale firmei (denumire, CUI, adresă, email de contact) se completează la lansare.</p>
+
+  <h2>Ce date colectăm</h2>
+  <ul>
+    <li><strong>Date de cont:</strong> nume, email, telefon, parola (salvată doar criptat) sau identificatorul contului Google.</li>
+    <li><strong>Adrese de livrare</strong> pe care alegi să le salvezi.</li>
+    <li><strong>Comenzi:</strong> produsele cumpărate, sumele, metoda de plată și statusul.</li>
+    <li><strong>Recenzii:</strong> numele afișat și textul pe care îl publici.</li>
+  </ul>
+  <p>Nu salvăm datele cardului tău. Plățile cu cardul sunt procesate de un procesator de plăți autorizat.</p>
+
+  <h2>De ce le folosim</h2>
+  <ul>
+    <li>Ca să livrăm comenzile și să te contactăm despre ele.</li>
+    <li>Ca să emitem documentele contabile cerute de lege.</li>
+    <li>Ca să-ți trimitem oferte pe email, doar dacă ai fost de acord.</li>
+  </ul>
+
+  <h2>Cookie-uri</h2>
+  <p>Folosim doar un cookie strict necesar, care ține minte coșul și dacă ești conectat. Nu folosim cookie-uri de reclamă sau de analiză.</p>
+
+  <h2>Drepturile tale</h2>
+  <p>Ai dreptul să îți vezi datele, să le corectezi, să le descarci, să îți retragi acordul de marketing și să ceri ștergerea contului.
+    Toate se pot face direct din <a href="{{ url_for('account_privacy') }}">Contul meu → Confidențialitate</a>.
+    Poți depune o plângere la Autoritatea Națională de Supraveghere a Prelucrării Datelor cu Caracter Personal (ANSPDCP).</p>
+
+  <h2>Cât timp păstrăm datele</h2>
+  <p>Datele contului, până îl ștergi. Datele din comenzi, cât cer obligațiile legale de contabilitate. Perioada exactă se completează la lansare.</p>
+</div>
+
+{% endblock %}

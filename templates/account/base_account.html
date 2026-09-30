@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container account-layout">
+  <aside class="account-side">
+    <p class="account-hello">
+      <span class="muted small">Salut,</span>
+      <strong>{{ customer.name }}</strong>
+    </p>
+    <nav class="account-nav" aria-label="Contul meu">
+      <a href="{{ url_for('account_orders') }}" class="{% if active == 'comenzi' %}active{% endif %}">Comenzile mele</a>
+      <a href="{{ url_for('account_addresses') }}" class="{% if active == 'adrese' %}active{% endif %}">Adrese</a>
+      <a href="{{ url_for('account_payment') }}" class="{% if active == 'plata' %}active{% endif %}">Plată</a>
+      <a href="{{ url_for('account_profile') }}" class="{% if active == 'date' %}active{% endif %}">Datele mele</a>
+      <a href="{{ url_for('account_privacy') }}" class="{% if active == 'confidentialitate' %}active{% endif %}">Confidențialitate</a>
+    </nav>
+    <form method="post" action="{{ url_for('customer_logout') }}">
+      <button type="submit" class="btn btn-ghost btn-small btn-block">Ieși din cont</button>
+    </form>
+  </aside>
+  <section class="account-main">
+    {% block account_content %}{% endblock %}
+  </section>
+</div>
+{% endblock %}

@@ -1,0 +1,66 @@
+{% extends "admin/base_admin.html" %}
+{% block title %}{{ 'Editează produs' if editing else 'Produs nou' }} · Administrare{% endblock %}
+{% block admin_content %}
+<div class="admin-head">
+  <h1>{{ 'Editează produsul' if editing else 'Produs nou' }}</h1>
+  <a href="{{ url_for('admin_products') }}" class="btn btn-ghost">Înapoi la listă</a>
+</div>
+
+{% if errors %}
+<div class="flash flash-error"><ul>{% for e in errors %}<li>{{ e }}</li>{% endfor %}</ul></div>
+{% endif %}
+
+<form method="post" enctype="multipart/form-data" class="card product-form">
+  <div class="field-grid">
+    <div class="field field-wide">
+      <label for="name">Nume produs</label>
+      <input type="text" id="name" name="name" value="{{ data.name or '' }}" required>
+    </div>
+    <div class="field">
+      <label for="category_id">Categorie</label>
+      <select id="category_id" name="category_id">
+        {% for c in categories %}
+        <option value="{{ c.id }}" {% if c.id == data.category_id %}selected{% endif %}>{{ c.name }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="field">
+      <label for="price">Preț (lei)</label>
+      <input type="number" id="price" name="price" value="{{ data.price or '' }}" min="1" step="1" required>
+    </div>
+    <div class="field">
+      <label for="stock">Stoc (bucăți)</label>
+      <input type="number" id="stock" name="stock" value="{{ data.stock if data.stock is not none else '' }}" min="0" step="1" required>
+    </div>
+    <div class="field">
+      <label for="color">Culoare</label>
+      <input type="text" id="color" name="color" value="{{ data.color or '' }}">
+    </div>
+    <div class="field">
+      <label for="material">Material</label>
+      <input type="text" id="material" name="material" value="{{ data.material or '' }}">
+    </div>
+    <div class="field">
+      <label for="dimensions">Dimensiuni</label>
+      <input type="text" id="dimensions" name="dimensions" value="{{ data.dimensions or '' }}" placeholder="ex. 120 × 60 × 75 cm">
+    </div>
+    <div class="field field-wide">
+      <label for="short_desc">Descriere scurtă (apare pe cardul produsului)</label>
+      <input type="text" id="short_desc" name="short_desc" value="{{ data.short_desc or '' }}" maxlength="140">
+    </div>
+    <div class="field field-wide">
+      <label for="description">Descriere completă</label>
+      <textarea id="description" name="description" rows="5">{{ data.description or '' }}</textarea>
+    </div>
+    <div class="field field-wide image-field">
+      {% if data.image %}<img src="{{ data.image|img }}" alt="Poza actuală" class="thumb-large">{% endif %}
+      <div>
+        <label for="image">{{ 'Schimbă poza' if data.image else 'Poză produs' }}</label>
+        <input type="file" id="image" name="image" accept=".jpg,.jpeg,.png,.webp">
+        <p class="muted small">JPG, PNG sau WEBP, maximum 8 MB.</p>
+      </div>
+    </div>
+  </div>
+  <button type="submit" class="btn btn-large">{{ 'Salvează modificările' if editing else 'Adaugă produsul' }}</button>
+</form>
+{% endblock %}

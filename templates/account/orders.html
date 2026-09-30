@@ -1,0 +1,23 @@
+{% extends "account/base_account.html" %}
+{% from "_macros.html" import order_rows with context %}
+{% block title %}Comenzile mele{% endblock %}
+
+{% block account_content %}
+<h1>Comenzile mele</h1>
+
+<section class="account-section">
+  <h2>În curs</h2>
+  {% if current %}{{ order_rows(current) }}
+  {% else %}<p class="muted">Nu ai comenzi în curs.</p>{% endif %}
+</section>
+
+<section class="account-section">
+  <h2>Istoric</h2>
+  {% if past %}{{ order_rows(past) }}
+  {% else %}<p class="muted">Comenzile livrate sau anulate vor apărea aici.</p>{% endif %}
+</section>
+
+{% if not current and not past %}
+<a href="{{ url_for('index') }}#categorii" class="btn">Începe cumpărăturile</a>
+{% endif %}
+{% endblock %}

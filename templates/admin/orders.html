@@ -1,0 +1,43 @@
+{% extends "admin/base_admin.html" %}
+{% block title %}Comenzi · Administrare{% endblock %}
+{% block admin_content %}
+<div class="admin-head">
+  <h1>Comenzi <span class="muted">({{ orders|length }})</span></h1>
+</div>
+
+<div class="table-wrap">
+  <table class="admin-table">
+    <thead>
+      <tr><th>#</th><th>Data</th><th>Client</th><th>Plată</th><th class="num">Produse</th><th class="num">Total</th><th>Status</th></tr>
+    </thead>
+    <tbody>
+      {% for o in orders %}
+      <tr>
+        <td><a href="{{ url_for('order_done', order_id=o.id, din='admin') }}">{{ o.id }}</a></td>
+        <td>{{ o.created_at }}</td>
+        <td>
+          {% if o.customer_id %}<a href="{{ url_for('admin_customer', customer_id=o.customer_id) }}">{{ o.customer_name }}</a>
+          {% else %}{{ o.customer_name }} <span class="muted small">(fără cont)</span>{% endif %}
+          <br><span class="muted small">{{ o.email }} · {{ o.phone }}</span>
+        </td>
+        <td>{{ PAYMENT_METHODS[o.payment_method] }}</td>
+        <td class="num">{{ o.item_count }}</td>
+        <td class="num">{{ o.total|lei }}</td>
+        <td>
+          <form method="post" action="{{ url_for('admin_order_status', order_id=o.id) }}" class="status-form">
+            <label class="sr-only" for="status-{{ o.id }}">Status comanda {{ o.id }}</label>
+            <select id="status-{{ o.id }}" name="status" onchange="this.form.submit()">
+              {% for key, label in ORDER_STATUSES.items() %}
+              <option value="{{ key }}" {% if key == o.status %}selected{% endif %}>{{ label }}</option>
+              {% endfor %}
+            </select>
+          </form>
+        </td>
+      </tr>
+      {% else %}
+      <tr><td colspan="7" class="muted">Încă nu există comenzi.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}
