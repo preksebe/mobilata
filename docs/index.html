@@ -1461,11 +1461,46 @@ document.addEventListener('change', e => {
   }
 });
 
-document.getElementById('nav-links').innerHTML = db.categories.map(c => `<a href="#c-${c.slug}" data-cat="${c.slug}">${esc(c.name)}</a>`).join('');
-document.getElementById('footer-cats').innerHTML = db.categories.map(c => `<li><a href="#c-${c.slug}">${esc(c.name)}</a></li>`).join('');
-const fitNav = window.setupCategoryNav();
-window.addEventListener('hashchange', route);
-route();
+// ---------- Catalogul din Supabase ----------
+// Cheia publică (publishable) e făcută să stea în cod. Regulile din baza de date (RLS)
+// permit doar citirea categoriilor, produselor și recenziilor.
+const SUPABASE_URL = 'https://vlyumivkyfivholhgfda.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_7LsjX6z9owt44sliS-6fsQ_Lt5-jWSZ';
+async function sb(path) {
+  const ctl = new AbortController(), timer = setTimeout(() => ctl.abort(), 7000);
+  try {
+    const r = await fetch(`${SUPABASE_URL}/rest/v1/${path}`, { headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}` }, signal: ctl.signal });
+    if (!r.ok) throw new Error(`Supabase ${r.status}`);
+    return await r.json();
+  } finally { clearTimeout(timer); }
+}
+async function loadCatalog() {
+  try {
+    const [cats, prods] = await Promise.all([
+      sb('categories?select=id,slug,name,description,image&order=sort'),
+      sb('products?select=id,category_id,slug,name,short_desc,description,price,material,dimensions,color,stock,image,created_at,reviews(author,rating,text)&order=id'),
+    ]);
+    if (!cats.length || !prods.length) throw new Error('Baza de date e goală');
+    const slugOf = Object.fromEntries(cats.map(c => [c.id, c.slug]));
+    db.categories = cats;
+    db.products = prods.map(({ category_id, created_at, ...p }) => ({ ...p, cat: slugOf[category_id], created_at: String(created_at).slice(0, 16).replace('T', ' ') }));
+    db.seq.product = Math.max(db.seq.product, ...db.products.map(p => p.id) .map(i => i + 1));
+    save();
+    const bar = document.querySelector('.demo-bar');
+    if (bar) bar.innerHTML = '<strong>Versiune demo.</strong> Produsele vin din baza de date Supabase. Comenzile rămân doar în acest browser, nu se trimite nimic și nu se plătește nimic.';
+  } catch (e) {
+    console.warn('Catalogul din Supabase nu s-a încărcat, folosesc datele din demo.', e);
+  }
+}
+
+function start() {
+  document.getElementById('nav-links').innerHTML = db.categories.map(c => `<a href="#c-${c.slug}" data-cat="${c.slug}">${esc(c.name)}</a>`).join('');
+  document.getElementById('footer-cats').innerHTML = db.categories.map(c => `<li><a href="#c-${c.slug}">${esc(c.name)}</a></li>`).join('');
+  window.fitNav = window.setupCategoryNav();
+  window.addEventListener('hashchange', route);
+  route();
+}
+loadCatalog().then(start);
 
 </script>
 </body>
